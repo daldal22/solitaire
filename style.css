@@ -1,0 +1,325 @@
+@font-face {
+    font-family: 'Gmarket Sans';    font-style: normal;    font-weight: 700;
+    src: local('Gmarket Sans Bold'), local('GmarketSans-Bold'),
+    url('http://script.ebay.co.kr/fonts/GmarketSansBold.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+    url('http://script.ebay.co.kr/fonts/GmarketSansBold.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+@font-face {
+    font-family: 'Gmarket Sans';    font-style: normal;    font-weight: 500;
+    src: local('Gmarket Sans Medium'), local('GmarketSans-Medium'),
+    url('http://script.ebay.co.kr/fonts/GmarketSansMedium.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+    url('http://script.ebay.co.kr/fonts/GmarketSansMedium.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+@font-face {
+    font-family: 'Gmarket Sans';    font-style: normal;    font-weight: 300;
+    src: local('Gmarket Sans Light'), local('GmarketSans-Light'),
+    url('http://script.ebay.co.kr/fonts/GmarketSansLight.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+    url('http://script.ebay.co.kr/fonts/GmarketSansLight.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+    color: #333;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+button{
+    background: inherit ; border:none; box-shadow:none; border-radius:0; padding:0; overflow:visible; cursor:pointer}
+
+/* 헤더 */
+
+.header{
+    background: #242625;
+    display: flex;
+    padding: 16px 40px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.new-game{
+    border: 1px solid #fff;
+    border-radius: 30px;
+    background: #fff;
+    color: #333;
+    padding: 8px 16px;
+}
+
+.header-right-area{
+    display: flex;
+    width: 120px;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 18px;
+}
+
+.timer{
+    color: #fff;
+}
+
+.item-btn i{
+    color: #fff;
+    padding-left: 10px;
+}
+
+.main{
+    display: grid;
+    grid-template-columns: 1fr 7fr 1fr;
+    height: 100%;
+}
+
+.side-left{
+    background: #35403A;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: space-between; */
+    align-items: center;
+    position: relative;
+}
+
+.side-right{
+    background: #35403A;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.game-board{
+    background: #4C594F;
+}
+
+/*side-left*/
+
+.side-backward-card{
+    width: 50%;
+    margin-top: 40px;
+    padding-bottom: 20px;
+}
+
+.side-forward-card-1{
+    width: 50%;
+    margin-top: 180px;
+    position: absolute;
+}
+
+.side-forward-card-2{
+    width: 50%;
+    margin-top: 200px;
+    position: absolute;
+}
+
+.side-forward-card-3{
+    width: 50%;
+    position: absolute;
+    margin-top: 220px;
+    /* padding-bottom: 40px; */
+}
+
+/*side-right*/
+
+.spade-card{
+    width: 50%;
+    margin-top: 40px;
+    padding-bottom: 20px;
+}
+
+.heart-card{
+    width: 50%;
+    padding-bottom: 20px;
+}
+
+.diamond-card{
+    width: 50%;
+    padding-bottom: 20px;
+}
+
+.clover-card{
+    width: 50%;
+}
+
+/*game-board*/
+
+.game-board{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.card-area_1{
+    /* width: 50%; */
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.card-area_2{
+    /* width: 50%; */
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.card-area_3{
+    /* width: 50%; */
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.card-area_4{
+    /* width: 50%; */
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.card-area_5{
+    /* width: 50%; */
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.card-area_6{
+    /* width: 50%; */
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.card-area_7{
+    /* width: 50%; */
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+/* card */
+
+.backward-card-1{
+    position: absolute;
+    width: 50%;
+    margin-top: 40px;
+}
+
+.backward-card-2{
+    position: absolute;
+    width: 50%;
+    margin-top: 60px;
+}
+
+.backward-card-3{
+    position: absolute;
+    width: 50%;
+    margin-top: 80px;
+}
+
+.backward-card-4{
+    position: absolute;
+    width: 50%;
+    margin-top: 100px;
+}
+
+.backward-card-5{
+    position: absolute;
+    width: 50%;
+    margin-top: 120px;
+}
+
+.backward-card-6{
+    position: absolute;
+    width: 50%;
+    margin-top: 140px;
+}
+
+.backward-card-7{
+    position: absolute;
+    width: 50%;
+    margin-top: 160px;
+}
+
+.forward-card-1{
+    position: absolute;
+    width: 50%;
+    margin-top: 60px;
+}
+
+.forward-card-2{
+    position: absolute;
+    width: 50%;
+    margin-top: 80px;
+}
+
+.forward-card-3{
+    position: absolute;
+    width: 50%;
+    margin-top: 100px;
+}
+
+.forward-card-4{
+    position: absolute;
+    width: 50%;
+    margin-top: 120px;
+}
+
+.forward-card-5{
+    position: absolute;
+    width: 50%;
+    margin-top: 140px;
+}
+
+.forward-card-6{
+    position: absolute;
+    width: 50%;
+    margin-top: 160px;
+}
+
+.forward-card-7{
+    position: absolute;
+    width: 50%;
+    margin-top: 180px;
+}
