@@ -65,7 +65,14 @@ table {
 button{
     background: inherit ; border:none; box-shadow:none; border-radius:0; padding:0; overflow:visible; cursor:pointer}
 
+html, body{
+    height: 100%;
+}
 /* 헤더 */
+
+.container{
+    height: 100%;
+}
 
 .header{
     background: #242625;
@@ -129,25 +136,25 @@ button{
 /*side-left*/
 
 .side-backward-card{
-    width: 50%;
+    width: 80px;
     margin-top: 40px;
     padding-bottom: 20px;
 }
 
 .side-forward-card-1{
-    width: 50%;
+    width: 80px;
     margin-top: 180px;
     position: absolute;
 }
 
 .side-forward-card-2{
-    width: 50%;
+    width: 80px;
     margin-top: 200px;
     position: absolute;
 }
 
 .side-forward-card-3{
-    width: 50%;
+    width: 80px;
     position: absolute;
     margin-top: 220px;
     /* padding-bottom: 40px; */
@@ -156,23 +163,23 @@ button{
 /*side-right*/
 
 .spade-card{
-    width: 50%;
+    width: 80px;
     margin-top: 40px;
     padding-bottom: 20px;
 }
 
 .heart-card{
-    width: 50%;
+    width: 80px;
     padding-bottom: 20px;
 }
 
 .diamond-card{
-    width: 50%;
+    width: 80px;
     padding-bottom: 20px;
 }
 
 .clover-card{
-    width: 50%;
+    width: 80px;
 }
 
 /*game-board*/
@@ -183,7 +190,6 @@ button{
 }
 
 .card-area_1{
-    /* width: 50%; */
     position: relative;
     display: flex;
     align-items: center;
@@ -191,7 +197,6 @@ button{
 }
 
 .card-area_2{
-    /* width: 50%; */
     position: relative;
     display: flex;
     align-items: center;
@@ -199,7 +204,6 @@ button{
 }
 
 .card-area_3{
-    /* width: 50%; */
     position: relative;
     display: flex;
     align-items: center;
@@ -207,7 +211,6 @@ button{
 }
 
 .card-area_4{
-    /* width: 50%; */
     position: relative;
     display: flex;
     align-items: center;
@@ -215,7 +218,6 @@ button{
 }
 
 .card-area_5{
-    /* width: 50%; */
     position: relative;
     display: flex;
     align-items: center;
@@ -223,7 +225,6 @@ button{
 }
 
 .card-area_6{
-    /* width: 50%; */
     position: relative;
     display: flex;
     align-items: center;
@@ -231,7 +232,6 @@ button{
 }
 
 .card-area_7{
-    /* width: 50%; */
     position: relative;
     display: flex;
     align-items: center;
@@ -242,84 +242,84 @@ button{
 
 .backward-card-1{
     position: absolute;
-    width: 50%;
+    width: 80px;
     margin-top: 40px;
 }
 
 .backward-card-2{
     position: absolute;
-    width: 50%;
+    width: 80px;
     margin-top: 60px;
 }
 
 .backward-card-3{
     position: absolute;
-    width: 50%;
+    width: 80px;
     margin-top: 80px;
 }
 
 .backward-card-4{
     position: absolute;
-    width: 50%;
+    width: 80px;
     margin-top: 100px;
 }
 
 .backward-card-5{
     position: absolute;
-    width: 50%;
+    width: 80px;
     margin-top: 120px;
 }
 
 .backward-card-6{
     position: absolute;
-    width: 50%;
+    width: 80px;
     margin-top: 140px;
 }
 
 .backward-card-7{
     position: absolute;
-    width: 50%;
+    width: 80px;
     margin-top: 160px;
 }
 
 .forward-card-1{
     position: absolute;
-    width: 50%;
+    width: 80px;
     margin-top: 60px;
 }
 
 .forward-card-2{
     position: absolute;
-    width: 50%;
+    width: 80px;
     margin-top: 80px;
 }
 
 .forward-card-3{
     position: absolute;
-    width: 50%;
+    width: 80px;
     margin-top: 100px;
 }
 
 .forward-card-4{
     position: absolute;
-    width: 50%;
+    width: 80px;
     margin-top: 120px;
 }
 
 .forward-card-5{
     position: absolute;
-    width: 50%;
+    width: 80px;
     margin-top: 140px;
 }
 
 .forward-card-6{
     position: absolute;
-    width: 50%;
+    width: 80px;
     margin-top: 160px;
 }
 
 .forward-card-7{
     position: absolute;
-    width: 50%;
+    width: 80px;
     margin-top: 180px;
 }
