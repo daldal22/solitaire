@@ -72,7 +72,8 @@ html, body{
 
 .container{
     height: 100%;
-    width: 1440px;
+    width: 800px;
+    margin: 0 auto;
 }
 
 .header{
@@ -111,7 +112,7 @@ html, body{
 .main{
     display: grid;
     grid-template-columns: 1fr 7fr 1fr;
-    height: 100%;
+    height: calc(100% - 70px);
 }
 
 .side-left{
@@ -137,25 +138,25 @@ html, body{
 /*side-left*/
 
 .side-backward-card{
-    width: 80px;
+    width: 60px;
     margin-top: 40px;
     padding-bottom: 20px;
 }
 
 .side-forward-card-1{
-    width: 80px;
+    width: 60px;
     margin-top: 180px;
     position: absolute;
 }
 
 .side-forward-card-2{
-    width: 80px;
+    width: 60px;
     margin-top: 200px;
     position: absolute;
 }
 
 .side-forward-card-3{
-    width: 80px;
+    width: 60px;
     position: absolute;
     margin-top: 220px;
     /* padding-bottom: 40px; */
@@ -164,23 +165,18 @@ html, body{
 /*side-right*/
 
 .spade-card{
-    width: 80px;
+    width: 60px;
     margin-top: 40px;
     padding-bottom: 20px;
 }
 
-.heart-card{
-    width: 80px;
-    padding-bottom: 20px;
-}
-
-.diamond-card{
-    width: 80px;
+.heart-card, .diamond-card{
+    width: 60px;
     padding-bottom: 20px;
 }
 
 .clover-card{
-    width: 80px;
+    width: 60px;
 }
 
 /*game-board*/
@@ -188,139 +184,120 @@ html, body{
 .game-board{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    padding: 0px 20px;
 }
 
-.card-area_1{
+.card-area_1, .card-area_2, .card-area_3, .card-area_4, .card-area_5,
+.card-area_6, .card-area_7{
     position: relative;
     display: flex;
     align-items: center;
-    flex-direction: column;
-}
-
-.card-area_2{
-    position: relative;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-}
-
-.card-area_3{
-    position: relative;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-}
-
-.card-area_4{
-    position: relative;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-}
-
-.card-area_5{
-    position: relative;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-}
-
-.card-area_6{
-    position: relative;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-}
-
-.card-area_7{
-    position: relative;
-    display: flex;
-    align-items: center;
+    justify-content: space-between;
     flex-direction: column;
 }
 
 /* card */
 
-.backward-card-1{
+.backward-card-1, .forward-card-0{
     position: absolute;
-    width: 80px;
-    margin-top: 40px;
+    width: 60px;
+    top: 40px; /* top으로 다 바꾸기 */
 }
 
-.backward-card-2{
+.backward-card-2, .forward-card-1{
     position: absolute;
-    width: 80px;
-    margin-top: 60px;
+    width: 60px;
+    top: 60px;
 }
 
-.backward-card-3{
+.backward-card-3, .forward-card-2{
     position: absolute;
-    width: 80px;
-    margin-top: 80px;
+    width: 60px;
+    top: 80px;
 }
 
-.backward-card-4{
+.backward-card-4, .forward-card-3{
     position: absolute;
-    width: 80px;
-    margin-top: 100px;
+    width: 60px;
+    top: 100px;
 }
 
-.backward-card-5{
+.backward-card-5, .forward-card-4{
     position: absolute;
-    width: 80px;
-    margin-top: 120px;
+    width: 60px;
+    top: 120px;
 }
 
-.backward-card-6{
+.backward-card-6, .forward-card-5{
     position: absolute;
-    width: 80px;
-    margin-top: 140px;
+    width: 60px;
+    top: 140px;
 }
 
-.backward-card-7{
+.backward-card-7, .forward-card-6{
     position: absolute;
-    width: 80px;
-    margin-top: 160px;
-}
-
-.forward-card-1{
-    position: absolute;
-    width: 80px;
-    margin-top: 60px;
-}
-
-.forward-card-2{
-    position: absolute;
-    width: 80px;
-    margin-top: 80px;
-}
-
-.forward-card-3{
-    position: absolute;
-    width: 80px;
-    margin-top: 100px;
-}
-
-.forward-card-4{
-    position: absolute;
-    width: 80px;
-    margin-top: 120px;
-}
-
-.forward-card-5{
-    position: absolute;
-    width: 80px;
-    margin-top: 140px;
-}
-
-.forward-card-6{
-    position: absolute;
-    width: 80px;
-    margin-top: 160px;
+    width: 60px;
+    top: 160px;
 }
 
 .forward-card-7{
     position: absolute;
-    width: 80px;
-    margin-top: 180px;
+    width: 60px;
+    top: 180px;
 }
+
+.forward-card-8{
+    position: absolute;
+    width: 60px;
+    top: 200px;
+}
+
+.forward-card-9{
+    position: absolute;
+    width: 60px;
+    top: 220px;
+}
+
+.forward-card-10{
+    position: absolute;
+    width: 60px;
+    top: 240px;
+}
+
+.forward-card-11{
+    position: absolute;
+    width: 60px;
+    top: 260px;
+}
+
+.forward-card-12{
+    position: absolute;
+    width: 60px;
+    top: 280px;
+}
+
+.forward-card-13{
+    position: absolute;
+    width: 60px;
+    top: 300px;
+}
+
+/* 
+게임판 자체를 축소하기
+중복되는거 합치기
+가운데 정렬
+스크롤 없애기 */
+
+/* css 우선 순위 */
+/* element << 가장 낮음 ex) button, ul */
+/* id > class */
+/* important */
+/* inline(style="color:red") 이게 가장 높음 */
+
+/* 카드에리어 하나는 앞면 카드로 전부 바꿔보기 */
+/* 헤더 상하 패딩으로 두지 말고 픽셀로 높이(height) 정하기 */
+
+/* 카드 사이에 간격 줄이기(메인보드) */
+/* 간격 잘 맞추기!! */
+/* 카드 디자인 중에서 숫자랑 스페이드가 아래로 내려가게 되어있는데 숫자랑 스페이드 가로 한줄에 있게.. */
+/* 카드 숫자만 보이게.. */
