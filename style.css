@@ -17,6 +17,8 @@
     url('http://script.ebay.co.kr/fonts/GmarketSansLight.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap');
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -67,6 +69,7 @@ button{
 
 html, body{
     height: 100%;
+    font-family: 'Inter', sans-serif;
 }
 /* 헤더 */
 
@@ -76,43 +79,83 @@ html, body{
     margin: 0 auto;
 }
 
+.wrap-main_img{
+    width: 800px;
+    background: #4C594F;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main_img{
+    width: 320px;
+    margin: 0 auto;
+}
+
 .header{
     background: #242625;
     display: flex;
-    padding: 16px 40px;
+    padding: 16px 30px;
     justify-content: space-between;
     align-items: center;
 }
 
-.new-game{
+/* .new-game{
     border: 1px solid #fff;
     border-radius: 30px;
     background: #fff;
     color: #333;
-    padding: 8px 16px;
-}
+    padding: 4px 12px 6px 12px;
+    font-size: 700;
+    font-family: 'Noto Sans KR', sans-serif;
+    margin-bottom: 26px;
+} */
 
 .header-right-area{
     display: flex;
-    width: 120px;
+    width: 800px;
     justify-content: space-between;
     align-items: center;
     font-size: 18px;
+}
+
+.timer-btn i{
+    color: #fff;
+    font-size: 16px;
+}
+
+.fa-play{
+    margin-right: 10px;
 }
 
 .timer{
     color: #fff;
 }
 
-.item-btn i{
+.fa-rotate-right{
     color: #fff;
-    padding-left: 10px;
+    font-size: 16px;
+    margin-right: 6px;
 }
 
 .main{
     display: grid;
     grid-template-columns: 1fr 7fr 1fr;
     height: calc(100% - 70px);
+}
+
+
+.pause{
+    background: #fff;
+    width: 380px;
+    height: 260px;
+    position: absolute;
+    z-index: 1;
+    border-radius: 10px;
+    /* display: flex;
+    align-items: center;
+    justify-content: center; */
 }
 
 .side-left{
@@ -122,6 +165,7 @@ html, body{
     /* justify-content: space-between; */
     align-items: center;
     position: relative;
+    justify-content: space-between;
 }
 
 .side-right{
@@ -133,59 +177,55 @@ html, body{
 
 .game-board{
     background: #4C594F;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    padding: 0px 30px;
 }
 
 /*side-left*/
 
 .side-backward-card{
     width: 60px;
-    margin-top: 40px;
+    margin-top: 26px;
     padding-bottom: 20px;
 }
 
 .side-forward-card-1{
     width: 60px;
-    margin-top: 180px;
+    top: 140px;
     position: absolute;
 }
 
 .side-forward-card-2{
     width: 60px;
-    margin-top: 200px;
+    top: 160px;
     position: absolute;
 }
 
 .side-forward-card-3{
     width: 60px;
     position: absolute;
-    margin-top: 220px;
-    /* padding-bottom: 40px; */
+    top: 180px;
 }
 
 /*side-right*/
 
+.heart-card{
+    width: 60px;
+    margin-top: 26px;
+    padding-bottom: 20px;
+}
+
+.clover-card, .diamond-card{
+    width: 60px;
+    padding-bottom: 20px;
+}
+
 .spade-card{
-    width: 60px;
-    margin-top: 40px;
-    padding-bottom: 20px;
-}
-
-.heart-card, .diamond-card{
-    width: 60px;
-    padding-bottom: 20px;
-}
-
-.clover-card{
     width: 60px;
 }
 
 /*game-board*/
-
-.game-board{
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-    padding: 0px 20px;
-}
 
 .card-area_1, .card-area_2, .card-area_3, .card-area_4, .card-area_5,
 .card-area_6, .card-area_7{
@@ -198,95 +238,101 @@ html, body{
 
 /* card */
 
-.backward-card-1, .forward-card-0{
-    position: absolute;
-    width: 60px;
-    top: 40px; /* top으로 다 바꾸기 */
-}
-
-.backward-card-2, .forward-card-1{
-    position: absolute;
-    width: 60px;
-    top: 60px;
-}
-
-.backward-card-3, .forward-card-2{
-    position: absolute;
-    width: 60px;
-    top: 80px;
-}
-
-.backward-card-4, .forward-card-3{
-    position: absolute;
-    width: 60px;
-    top: 100px;
-}
-
-.backward-card-5, .forward-card-4{
-    position: absolute;
-    width: 60px;
-    top: 120px;
-}
-
-.backward-card-6, .forward-card-5{
-    position: absolute;
-    width: 60px;
-    top: 140px;
-}
-
-.backward-card-7, .forward-card-6{
-    position: absolute;
-    width: 60px;
-    top: 160px;
-}
-
-.forward-card-7{
-    position: absolute;
-    width: 60px;
-    top: 180px;
-}
-
-.forward-card-8{
-    position: absolute;
-    width: 60px;
-    top: 200px;
-}
-
-.forward-card-9{
-    position: absolute;
-    width: 60px;
-    top: 220px;
-}
-
-.forward-card-10{
-    position: absolute;
-    width: 60px;
-    top: 240px;
-}
-
-.forward-card-11{
-    position: absolute;
-    width: 60px;
-    top: 260px;
-}
-
-.forward-card-12{
-    position: absolute;
-    width: 60px;
-    top: 280px;
-}
-
+.backward-card-1, .backward-card-2, .backward-card-3, .backward-card-4,
+.backward-card-5, .backward-card-6, .backward-card-7, .forward-card-0,
+.forward-card-1, .forward-card-2, .forward-card-3, .forward-card-4,
+.forward-card-5, .forward-card-6, .forward-card-7, .forward-card-8,
+.forward-card-9, .forward-card-10, .forward-card-11, .forward-card-12,
 .forward-card-13{
     position: absolute;
     width: 60px;
-    top: 300px;
+    box-shadow: 2px 2px 5px #333;
 }
 
-/* 
-게임판 자체를 축소하기
-중복되는거 합치기
-가운데 정렬
-스크롤 없애기 */
+.backward-card-1, .forward-card-0{
+    top: 26px; /* top으로 다 바꾸기 */
+}
+/* position이랑 width는 전부 한 곳에 두고 top은 따로 만들어서 중복되는거 두기 */
+/* 그림자 css에서 넣어보고 아니다싶으면 일러로 일일히 넣기 */
+
+.backward-card-2, .forward-card-1{
+    top: 46px;
+}
+
+.backward-card-3, .forward-card-2{
+    top: 66px;
+}
+
+.backward-card-4, .forward-card-3{
+    top: 86px;
+}
+
+.backward-card-5, .forward-card-4{
+    top: 106px;
+}
+
+.backward-card-6, .forward-card-5{
+    top: 126px;
+}
+
+.backward-card-7, .forward-card-6{
+    top: 146px;
+}
+
+.forward-card-7{
+    top: 166px;
+}
+
+.forward-card-8{
+    top: 186px;
+}
+
+.forward-card-9{
+    top: 206px;
+}
+
+.forward-card-10{
+    top: 226px;
+}
+
+.forward-card-11{
+    top: 246px;
+}
+
+.forward-card-12{
+    top: 266px;
+}
+
+.forward-card-13{
+    top: 286px;
+}
+
+.forward-card-14{
+    top: 306px;
+}
+
+.forward-card-15{
+    top: 326px;
+}
+
+.forward-card-16{
+    top: 346px;
+}
+
+.forward-card-17{
+    top: 366px;
+}
+
+.forward-card-18{
+    top: 386px;
+}
+
+.forward-card-19{
+    top: 406px;
+}
+
+/* 탑 전부 조정하기 간격 조금 줄이기(위아래 간격) */
+
 
 /* css 우선 순위 */
 /* element << 가장 낮음 ex) button, ul */
@@ -294,10 +340,30 @@ html, body{
 /* important */
 /* inline(style="color:red") 이게 가장 높음 */
 
-/* 카드에리어 하나는 앞면 카드로 전부 바꿔보기 */
-/* 헤더 상하 패딩으로 두지 말고 픽셀로 높이(height) 정하기 */
 
-/* 카드 사이에 간격 줄이기(메인보드) */
-/* 간격 잘 맞추기!! */
-/* 카드 디자인 중에서 숫자랑 스페이드가 아래로 내려가게 되어있는데 숫자랑 스페이드 가로 한줄에 있게.. */
-/* 카드 숫자만 보이게.. */
+/* 마지막 에리어에 k부터 a까지 카드 적용해보기 */
+/* 솔리테어 알고리즘 연구해오기(서치 해보기) */
+/* 타이머 만들기(일시정지, 재생 버튼도 만들어서) 정지하면 화면 안 보이게 */
+/* 클릭하면 알아서 가게 하는거랑 드래그해서 옮기는거 기능 연구해보기 */
+/* 난이도 쉬움이랑 어려움 화면 만들기 모달으로 만들기<<이건 이번 숙제 아님 */
+/* 난이도 어려움은 클릭으로 옮기는게 안 된다 */
+/* 일러 전부 고치기 숫자랑 아이콘이 너무 작음 */
+/* 오른쪽 빈 카드 부분에 스페이드 하트 이런 아이콘 넣기 구글 솔리테어 손민수 하기 */
+
+/* 
+1. 정지화면 만들기 했음 근데 구현 아직
+2. 카드 디자인 고친거 맨 마지막 에리어에 k~a까지 적용
+4. 솔리테어 알고리즘 연구 */
+
+/* 
+1. 카드 52장 초기화하고 섞기
+2. 게임보드 초기화하고 랜덤으로 섞인 카드덱에서 카드 뽑아서 각 카드 에리어에 위치해야함
+3. 카드 이동할 때 드래그와 클릭 방식으로 이동 가능하게 만들어야함
+4. 승리 조건 만들어야함 a~k까지 오른쪽 사이드 영역에 순서대로 위치하게
+5. 여러장의 카드가 순서대로 나열되어있고, 카드 에리어들 중에 이동할 수 있는 조건에 맞는 카드가 있다면 한꺼번에 이동이 가능해야함
+6. 나열되지 않은 카드배열 뒤집기
+7. 앞면으로 되어있는 카드가 해당 에리어에서 사라지면 그 다음 순서에 있는 카드가 뒤집어져야한다
+8.
+*/
+
+/* forward card 15부턴 늘어나지 않음 */
