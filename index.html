@@ -18,12 +18,34 @@
 <div class="container">
   <div class="header">
     <div class="header-right-area">
+        <div class="timer">00:00</div>
+        <div class="game-score">score : 0</div>
         <div class="timer-btn">
-            <button class="play-btn" onclick="startClock()"><i class="fa-solid fa-play"></i></button>
+            <!-- <button class="play-btn" onclick="startClock()"><i class="fa-solid fa-play"></i></button> -->
             <button class="stop-btn" onclick="stopClock()"><i class="fa-solid fa-pause"></i></button>           
         </div>
-        <div class="timer">00:00</div>
-        <i class="fa-solid fa-rotate-right"></i>
+    </div>
+  </div>
+  <div class="pause-modal">
+    <div class="modal-body">
+        <div class="modal-top-area">
+            <p class="title-modal">일시정지</p>
+            <img class="x-mark" src="img/xmark-solid.svg">
+        </div>
+        <img class="line" src="img/Line.svg">
+        <div class="wrap-option">
+            <div class="option-select">
+                <p class="new-game">새 게임</p>
+                <p class="continue">계속하기</p>
+            </div>
+            <div class="level-select">
+                <p class="level-title">난이도 설정</p>
+                <div class="item-level">
+                    <p class="easy">쉬움</p>
+                    <p class="difficult">어려움</p>
+                </div>
+            </div>
+        </div>
     </div>
   </div>
   <main class="main">
@@ -116,6 +138,9 @@
         <div class="diamond-card"><img src="img/empty_card_diamond.svg" alt=""></div>
         <div class="clover-card"><img src="img/empty_card_clover.svg" alt=""></div>
         <div class="spade-card"><img src="img/empty_card_spade.svg" alt=""></div>
+        <button class="return-btn">
+            <i class="fa-solid fa-rotate-right"></i>
+        </button>
     </div>
   </main>
 </div>
