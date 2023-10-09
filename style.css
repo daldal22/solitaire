@@ -79,6 +79,136 @@ html, body{
     margin: 0 auto;
 }
 
+/* modal */
+
+.pause-modal{
+    position: absolute;
+    width: 800px;
+    height: calc(100% - 70px);
+    visibility: hidden;
+    z-index: 2;
+    background: #4C594F;
+}
+
+.modal-body{
+    position: absolute;
+    background: #fff;
+    border-radius: 10px;
+    width: 300px;
+    height: 240px;
+    padding: 30px;
+    top: 50%;
+    left: 50%;
+    text-align: center;
+    transform: translate(-50%, -50%);
+}
+
+.modal-top-area{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.title-modal{
+    font-family: 'Noto Sans KR';
+    font-size: 22px;
+    font-weight: 400;
+    color: #333;
+}
+
+.x-mark{
+    position: absolute;
+    width: 22px;
+    margin-top: 2px;
+    right: 0;
+    cursor: pointer;
+}
+
+.line{
+    width: 280px;
+}
+
+.wrap-option{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.option-select{
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 240px;
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.new-game{
+    border-radius: 30px;
+    background: #5398C3;
+    padding: 8px 32px 10px;
+    font-family: 'Noto Sans KR';
+    font-size: 18px;
+    color: #fff;
+    font-weight: 400;
+    position: absolute;
+    left: 0;
+}
+
+.continue{
+    font-family: 'Noto Sans KR';
+    font-size: 18px;
+    color: #333;
+    font-weight: 400;
+    position: absolute;
+    right: 0;
+}
+
+.level-select{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.level-title{
+    font-family: 'Noto Sans KR';
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 20px;
+    margin-top: 30px;
+}
+
+.item-level{
+    width: 200px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.easy{
+    border-radius: 30px;
+    background: #5398C3;
+    padding: 8px 16px 10px;
+    font-family: 'Noto Sans KR';
+    font-size: 18px;
+    font-weight: 400;
+    color: #fff;
+}
+
+.difficult{
+    font-family: 'Noto Sans KR';
+    font-size: 18px;
+    font-weight: 400;
+    color: #333;
+    margin-top: 7px;
+}
+
+/* 시작화면 */
+
 .wrap-main_img{
     width: 800px;
     background: #4C594F;
@@ -86,17 +216,47 @@ html, body{
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
 }
 
-.main_img{
-    width: 320px;
+/* .main_img{
+    width: 340px;
     margin: 0 auto;
+} */
+
+.btn-main-area{
+    padding-top: 40px;
 }
+
+.btn-play-game{
+    border-radius: 30px;
+    background: #fff;
+    color: #4C594F;
+    padding: 8px 0px;
+    font-family: 'Inter';
+    font-size: 18px;
+    font-weight: 700;
+    width: 160px;
+    margin-right: 40px;
+}
+
+.btn-game-ranking{
+    border-radius: 30px;
+    background: #fff;
+    color: #4C594F;
+    padding: 8px 0px;
+    font-family: 'Inter';
+    font-size: 18px;
+    font-weight: 700;
+    width: 160px;
+}
+
+/* game-page */
 
 .header{
     background: #242625;
     display: flex;
-    padding: 16px 30px;
+    padding: 16px 22px;
     justify-content: space-between;
     align-items: center;
 }
@@ -125,19 +285,18 @@ html, body{
     font-size: 16px;
 }
 
-.fa-play{
-    margin-right: 10px;
+.fa-pause{
+    margin-right: 16px;
 }
 
 .timer{
     color: #fff;
 }
 
-.fa-rotate-right{
+.game-score{
     color: #fff;
-    font-size: 16px;
-    margin-right: 6px;
 }
+
 
 .main{
     display: grid;
@@ -188,24 +347,28 @@ html, body{
     width: 60px;
     margin-top: 26px;
     padding-bottom: 20px;
+    box-shadow: 2px 2px 5px #333;
 }
 
 .side-forward-card-1{
     width: 60px;
     top: 140px;
     position: absolute;
+    box-shadow: 2px 2px 5px #333;
 }
 
 .side-forward-card-2{
     width: 60px;
     top: 160px;
     position: absolute;
+    box-shadow: 2px 2px 5px #333;
 }
 
 .side-forward-card-3{
     width: 60px;
     position: absolute;
     top: 180px;
+    box-shadow: 2px 2px 5px #333;
 }
 
 /*side-right*/
@@ -214,15 +377,28 @@ html, body{
     width: 60px;
     margin-top: 26px;
     padding-bottom: 20px;
+    box-shadow: 2px 2px 5px #333;
 }
 
 .clover-card, .diamond-card{
     width: 60px;
     padding-bottom: 20px;
+    box-shadow: 2px 2px 5px #333;
 }
 
 .spade-card{
     width: 60px;
+    box-shadow: 2px 2px 5px #333;
+}
+
+.fa-rotate-right{
+    border-radius: 100px;
+    padding: 16px;
+    background: #fff;
+    color: #35403A;
+    font-size: 16px;
+    margin-top: 40px;
+    box-shadow: 2px 2px 5px #333;
 }
 
 /*game-board*/
@@ -234,6 +410,7 @@ html, body{
     align-items: center;
     justify-content: space-between;
     flex-direction: column;
+    
 }
 
 /* card */
@@ -243,7 +420,8 @@ html, body{
 .forward-card-1, .forward-card-2, .forward-card-3, .forward-card-4,
 .forward-card-5, .forward-card-6, .forward-card-7, .forward-card-8,
 .forward-card-9, .forward-card-10, .forward-card-11, .forward-card-12,
-.forward-card-13{
+.forward-card-13, .forward-card-14, .forward-card-15, .forward-card-16,
+.forward-card-17, .forward-card-18, .forward-card-19{
     position: absolute;
     width: 60px;
     box-shadow: 2px 2px 5px #333;
@@ -331,29 +509,11 @@ html, body{
     top: 406px;
 }
 
-/* 탑 전부 조정하기 간격 조금 줄이기(위아래 간격) */
-
-
 /* css 우선 순위 */
 /* element << 가장 낮음 ex) button, ul */
 /* id > class */
 /* important */
 /* inline(style="color:red") 이게 가장 높음 */
-
-
-/* 마지막 에리어에 k부터 a까지 카드 적용해보기 */
-/* 솔리테어 알고리즘 연구해오기(서치 해보기) */
-/* 타이머 만들기(일시정지, 재생 버튼도 만들어서) 정지하면 화면 안 보이게 */
-/* 클릭하면 알아서 가게 하는거랑 드래그해서 옮기는거 기능 연구해보기 */
-/* 난이도 쉬움이랑 어려움 화면 만들기 모달으로 만들기<<이건 이번 숙제 아님 */
-/* 난이도 어려움은 클릭으로 옮기는게 안 된다 */
-/* 일러 전부 고치기 숫자랑 아이콘이 너무 작음 */
-/* 오른쪽 빈 카드 부분에 스페이드 하트 이런 아이콘 넣기 구글 솔리테어 손민수 하기 */
-
-/* 
-1. 정지화면 만들기 했음 근데 구현 아직
-2. 카드 디자인 고친거 맨 마지막 에리어에 k~a까지 적용
-4. 솔리테어 알고리즘 연구 */
 
 /* 
 1. 카드 52장 초기화하고 섞기
@@ -363,7 +523,44 @@ html, body{
 5. 여러장의 카드가 순서대로 나열되어있고, 카드 에리어들 중에 이동할 수 있는 조건에 맞는 카드가 있다면 한꺼번에 이동이 가능해야함
 6. 나열되지 않은 카드배열 뒤집기
 7. 앞면으로 되어있는 카드가 해당 에리어에서 사라지면 그 다음 순서에 있는 카드가 뒤집어져야한다
-8.
+8. 카드 붙일때 색깔이 다른지 확인하고 위에 있는 숫자가 바로 상위의 숫자인지 확인해야함
+9. 취소하기 누르면 이전에 옮긴 카드 되돌리기
+10. 힌트 버튼 누르면 화면에 있는 카드들 중에 가능한 경우를 따져서 카드를 옮김
 */
 
-/* forward card 15부턴 늘어나지 않음 */
+/* 점수 넣기, 랭킹 넣기 */
+/* 클리어 화면 만들기 점수랑 랭킹 나오게 */
+/* 힌트 알고리즘 만들기 레이아웃도 다시 만들기... */
+
+/* 
+카드를 기초 카드 더미로 옮기면 10점을 얻습니다.
+카드를 덱에서 줄 스택으로 옮기면 5점을 얻습니다.
+줄 스택에서 카드를 뒤집으면 5점을 얻습니다.
+카드가 기초 카드 더미에서 줄 스택으로 되돌아 오면 15점을 잃습니다.
+세 장씩 옵션으로 게임하는 경우 덱의 모든 카드를 3회까지 볼 수 있으며 그 이후에는 1회 당 20점을 잃습니다.
+한 장씩 옵션으로 게임하는 경우 덱의 모든 카드를 1회까지 볼 수 있으며 그 이후에는 1회 당 100점을 잃습니다.
+시간 제한된 게임에서는 10초 지날 때마다 2점씩 잃는 대신 게임을 끝내면 보너스 점수를 얻습니다. 게임을 빨리 끝낼수록 더 많은 보너스 점수를 얻습니다. */
+
+/* 
+멈추면 메인화면만 안 보이고 헤더 영역 보이게
+모달창 디자인 바꾸기 예쁘게
+모달창 글씨 크기 너무 큼
+*/
+
+/* 
+일시정지와 엑스를 감싸고있는 부모요소에게 포지션 릴레이티브 주고
+디스플레이 뭐든 중앙정렬하게 부모요소에게 준다
+엑스를 포지션 앱솔루트로 주고 라이트 값 0 준다
+*/
+
+/*
+카드 드래그 해보기 못하겠으면 알고리즘이라도 알아오기
+카드 이미지 다 만들어놓기
+카드 내용물이 있는 객체 만들어보기(덱을 만들어야함)
+*/
+
+/* 
+x가 너무 큼
+계속하기에 크기 주기
+새게임이랑 쉬움 보더패딩 똑같이 주기
+*/
