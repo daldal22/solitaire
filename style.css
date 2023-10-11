@@ -114,13 +114,13 @@ html, body{
 .title-modal{
     font-family: 'Noto Sans KR';
     font-size: 22px;
-    font-weight: 400;
+    font-weight: 500;
     color: #333;
 }
 
 .x-mark{
     position: absolute;
-    width: 22px;
+    width: 18px;
     margin-top: 2px;
     right: 0;
     cursor: pointer;
@@ -150,22 +150,27 @@ html, body{
 .new-game{
     border-radius: 30px;
     background: #5398C3;
-    padding: 8px 32px 10px;
+    padding: 8px 0px 10px;
     font-family: 'Noto Sans KR';
     font-size: 18px;
     color: #fff;
     font-weight: 400;
     position: absolute;
     left: 0;
+    width: 110px;
 }
 
 .continue{
     font-family: 'Noto Sans KR';
     font-size: 18px;
+    background: #fff;
+    border-radius: 30px;
+    padding: 8px 0px 10px;
     color: #333;
     font-weight: 400;
     position: absolute;
     right: 0;
+    width: 110px;
 }
 
 .level-select{
@@ -178,25 +183,27 @@ html, body{
 .level-title{
     font-family: 'Noto Sans KR';
     font-size: 18px;
+    font-weight: 500;
     color: #333;
-    margin-bottom: 20px;
-    margin-top: 30px;
+    margin-bottom: 24px;
+    margin-top: 24px;
 }
 
 .item-level{
-    width: 200px;
+    width: 240px;
     display: flex;
     justify-content: space-between;
 }
 
 .easy{
-    border-radius: 30px;
-    background: #5398C3;
-    padding: 8px 16px 10px;
     font-family: 'Noto Sans KR';
     font-size: 18px;
     font-weight: 400;
     color: #fff;
+    background: #5398C3;
+    border-radius: 30px;
+    padding: 8px 0px 10px;
+    width: 110px;
 }
 
 .difficult{
@@ -204,7 +211,10 @@ html, body{
     font-size: 18px;
     font-weight: 400;
     color: #333;
-    margin-top: 7px;
+    background: #fff;
+    border-radius: 30px;
+    padding: 8px 0px 10px;
+    width: 110px;
 }
 
 /* 시작화면 */
@@ -542,12 +552,6 @@ html, body{
 시간 제한된 게임에서는 10초 지날 때마다 2점씩 잃는 대신 게임을 끝내면 보너스 점수를 얻습니다. 게임을 빨리 끝낼수록 더 많은 보너스 점수를 얻습니다. */
 
 /* 
-멈추면 메인화면만 안 보이고 헤더 영역 보이게
-모달창 디자인 바꾸기 예쁘게
-모달창 글씨 크기 너무 큼
-*/
-
-/* 
 일시정지와 엑스를 감싸고있는 부모요소에게 포지션 릴레이티브 주고
 디스플레이 뭐든 중앙정렬하게 부모요소에게 준다
 엑스를 포지션 앱솔루트로 주고 라이트 값 0 준다
@@ -560,7 +564,5 @@ html, body{
 */
 
 /* 
-x가 너무 큼
-계속하기에 크기 주기
-새게임이랑 쉬움 보더패딩 똑같이 주기
+카드 이미지들 수정하기
 */
