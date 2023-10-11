@@ -60,28 +60,32 @@ const deck = [
 
 
 // 게임판
-const zone1 = ['SA'];
-const zone2 = ['D2', 'H2']; // 푸쉬하면 뒤로 카드가 붙기 때문에 하트2가 앞면이 된다
-const zone3 = ['C3', 'D3', 'S3'];
-const zone4 = ['S4', 'H4', 'D4', 'C4'];
-const zone5 = ['H5', 'D5', 'C5', 'S5', 'S6'];
-const zone6 = ['C6', 'D6', 'H6', 'S7', 'S8', 'S9'];
-const zone7 = ['S10', 'H10', 'D10', 'CJ', 'DJ', 'S7', 'S8', 'S9', 'S10'];
+const area = {
+    area0: ['SA'],
+    openIndex0: 0,
+    area1: ['D2', 'H2'],
+    openIndex1: 1,
+    area2: ['C3', 'D3', 'S3'],
+    openIndex2: 2,
+    area3: ['S4', 'H4', 'D4', 'C4'],
+    openIndex3: 3,
+    area4: ['H5', 'D5', 'C5', 'S5', 'S6'],
+    openIndex4: 4,
+    area5: ['C6', 'D6', 'H6', 'S7', 'S8', 'S9'],
+    openIndex5: 5,
+    area6: ['S10', 'H10', 'D10', 'CJ', 'DJ', 'SK', 'HK'],
+    openIndex6: 6
+};
+ // 푸쉬하면 뒤로 카드가 붙기 때문에 하트2가 앞면이 된다
 
-let open1 = 0;
-let open2 = 1;
-let open3 = 2;
-let open4 = 3;
-let open5 = 4;
-let open6 = 5;
-let open7 = 6;
+
 
 // 왼쪽 사이드 덱
 const LeftDeck = [
-    'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'SJ', 'SQ', 'SK',
-    'DA', 'D3', 'D5', 'D6', 'D7', 'D8', 'D9', 'D10', 'DJ', 'DK',
-    'HA', 'H3', 'H4', 'H5', 'H7', 'H8', 'H9', 'H10', 'HJ', 'HQ', 'HK',
-    'CA', 'C2', 'C4', 'C5', 'C7', 'C8', 'C9', 'C10', 'CJ', 'CQ', 'CK'
+    'S2', 'SJ', 'SQ',
+    'DA', 'D7', 'D8', 'D9', 'DK',
+    'HA', 'H3', 'H5', 'H7', 'H8', 'H9', 'HJ', 'HQ',
+    'CA', 'C2', 'C7', 'C8', 'C9', 'C10', 'CQ', 'CK'
 ];
 
 const openLeftDeck = [];
@@ -93,7 +97,39 @@ const HeartRight = [];
 const CloverRight = [];
 const DiamondRight = [];
 
-// 처음에 시작할 때 왼쪽에 덱이 오픈되어있지 않고 하나씩or세장씩 오픈되는거라
-// 빈 배열 만들고 거기에 푸쉬하는 식으로 만들어야할거같아서 왼쪽에 오픈된 덱은 따로 안 만들었어요
+/* <div class="backward-card-1"><img src="img/backward_orange.svg" alt=""></div>
+<div class="forward-card-1"><img src="img/SA.svg" alt=""></div> */
 
-// 오른쪽 사이드 덱은 제가 클릭하거나 드래그 해야 하나씩 쌓이는 구조라 이쪽도 빈배열에 푸쉬로 해야할거 같음
+function imgPath(image) {
+    return `img/${image}.svg`;
+}
+
+function render() {
+  for (let i = 0; i < 7; i++) {
+    const cardArea = document.querySelector(`.card-area_${i + 1}`);
+    if (cardArea) {
+      const cards = area['area' + i];
+      const openIndex = area['openIndex' + i];
+      let temp = '';
+        for (let j = 0; j < cards.length; j++) {
+          if (j === openIndex) {
+            const forwardImagePath = imgPath(cards[j]);
+            const forwardClass = `forward-card-${j}`;
+            temp += `<div class="${forwardClass}"><img src="${forwardImagePath}"></div>`;
+          } else {
+            const backwardImagePath = 'img/backward_orange.svg';
+            const backwardClass = `backward-card-${j + 1}`;
+            temp += `<div class="${backwardClass}"><img src="${backwardImagePath}"></div>`;
+          }
+        }
+
+        cardArea.innerHTML = temp;
+        }
+    }
+}
+
+render()
+
+// 1. 에리어의 i(포문의 i) 쿼리셀렉터로 가져옴 에리어 0번부터 6번까지 쿼리셀렉터로 셀렉해서 가져옴
+// 2. 에리어 i번째 배열을 포문으로 반복해서 엘리먼트 구조 만들어서 어펜드차일드 해주기
+// 3. 이중 포문을 함수로 만들어서 랜더함수 안에서 실행하고 전역에서 랜더함수 실행하기
