@@ -149,6 +149,8 @@ function findSameCard(card){
     if(card[0] === 'S') return 'S';
 } // 카드 무늬가 같은지 알아보는 함수
 
+// 드래그 오른쪽으로 했을때 자동으로 가게 만들었으면 좋겠다
+
 function shuffleLeftDeck(){
     if(!Array.isArray(LeftDeck)) return false;
 
@@ -161,6 +163,22 @@ function shuffleLeftDeck(){
         [LeftDeck[i], LeftDeck[j]] = [LeftDeck[j], LeftDeck[i]]
     }
 } // 왼쪽 카드 섞는 알고리즘
+
+function getBackLeftCard(){
+    while(openLeftDeck.length){
+        openLeftDeck.pop();
+    }
+} // 오픈한 카드 되돌리는 함수 (쉬움)
+// pop을 쓰면 뒤에 거가 빠짐 그리고 어떤 값이 반환된다
+// 팝 쓰지 말기
+// openLeftDeck을 LeftDeck에 할당하고 openLeftDeck을 비우기
+// 그 담에 레프트덱을 셔플해주기
+// 뽑는거 구현하기
+
+// 왼쪽 사이드 부분 구현하기 3개짜리로 구현하기 클릭이벤트 넣어서
+
+// getBackLeftCard();
+// console.log(LeftDeck)
 
 function createBoardArea(){
     for (let i = 0; i < 7; i++) {
@@ -203,3 +221,5 @@ render()
 // 함수는 2가지의 경우가 있음 1. 매개변수 받음 2. 매개변수 안 받음
 // 매개변수가 함수 안에서 사용하기 위해서는 타입체크가 필요하다
 // 타입 체크 해서 내가 원하지 않은 결과값이 나오면 함수가 실행 되지 않아야 한다(안전장치 만들기)
+
+// 드래그 방식의 어려움 난이도 먼저 구현을 하고 나중에 쉬움은 내가 따로 구현해보는 방식으로 하기
