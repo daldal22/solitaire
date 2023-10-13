@@ -95,7 +95,7 @@ html, body{
     background: #fff;
     border-radius: 10px;
     width: 300px;
-    height: 240px;
+    height: 230px;
     padding: 30px;
     top: 50%;
     left: 50%;
@@ -138,7 +138,7 @@ html, body{
 }
 
 .option-select{
-    margin-top: 50px;
+    margin-top: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -152,7 +152,7 @@ html, body{
     background: #5398C3;
     padding: 8px 0px 10px;
     font-family: 'Noto Sans KR';
-    font-size: 18px;
+    font-size: 16px;
     color: #fff;
     font-weight: 400;
     position: absolute;
@@ -162,7 +162,7 @@ html, body{
 
 .continue{
     font-family: 'Noto Sans KR';
-    font-size: 18px;
+    font-size: 16px;
     background: #fff;
     border-radius: 30px;
     padding: 8px 0px 10px;
@@ -186,7 +186,7 @@ html, body{
     font-weight: 500;
     color: #333;
     margin-bottom: 24px;
-    margin-top: 24px;
+    margin-top: 20px;
 }
 
 .item-level{
@@ -197,7 +197,7 @@ html, body{
 
 .easy{
     font-family: 'Noto Sans KR';
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 400;
     color: #fff;
     background: #5398C3;
@@ -208,7 +208,7 @@ html, body{
 
 .difficult{
     font-family: 'Noto Sans KR';
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 400;
     color: #333;
     background: #fff;
@@ -282,7 +282,7 @@ html, body{
     margin-bottom: 26px;
 } */
 
-.header-right-area{
+.header-area{
     display: flex;
     width: 800px;
     justify-content: space-between;
@@ -305,6 +305,8 @@ html, body{
 
 .game-score{
     color: #fff;
+    position: absolute;
+    left: 48%;
 }
 
 
@@ -413,8 +415,8 @@ html, body{
 
 /*game-board*/
 
-.card-area_1, .card-area_2, .card-area_3, .card-area_4, .card-area_5,
-.card-area_6, .card-area_7{
+.card-area_0, .card-area_1, .card-area_2, .card-area_3, .card-area_4,
+.card-area_5, .card-area_6{
     position: relative;
     display: flex;
     align-items: center;
@@ -425,8 +427,8 @@ html, body{
 
 /* card */
 
-.backward-card-1, .backward-card-2, .backward-card-3, .backward-card-4,
-.backward-card-5, .backward-card-6, .backward-card-7, .forward-card-0,
+.backward-card-0, .backward-card-1, .backward-card-2, .backward-card-3,
+.backward-card-4, .backward-card-5, .backward-card-6, .forward-card-0,
 .forward-card-1, .forward-card-2, .forward-card-3, .forward-card-4,
 .forward-card-5, .forward-card-6, .forward-card-7, .forward-card-8,
 .forward-card-9, .forward-card-10, .forward-card-11, .forward-card-12,
@@ -437,33 +439,33 @@ html, body{
     box-shadow: 2px 2px 5px #333;
 }
 
-.backward-card-1, .forward-card-0{
+.backward-card-0, .forward-card-0{
     top: 26px; /* top으로 다 바꾸기 */
 }
 /* position이랑 width는 전부 한 곳에 두고 top은 따로 만들어서 중복되는거 두기 */
 /* 그림자 css에서 넣어보고 아니다싶으면 일러로 일일히 넣기 */
 
-.backward-card-2, .forward-card-1{
+.backward-card-1, .forward-card-1{
     top: 46px;
 }
 
-.backward-card-3, .forward-card-2{
+.backward-card-2, .forward-card-2{
     top: 66px;
 }
 
-.backward-card-4, .forward-card-3{
+.backward-card-3, .forward-card-3{
     top: 86px;
 }
 
-.backward-card-5, .forward-card-4{
+.backward-card-4, .forward-card-4{
     top: 106px;
 }
 
-.backward-card-6, .forward-card-5{
+.backward-card-5, .forward-card-5{
     top: 126px;
 }
 
-.backward-card-7, .forward-card-6{
+.backward-card-6, .forward-card-6{
     top: 146px;
 }
 
@@ -565,4 +567,6 @@ html, body{
 
 /* 
 카드 이미지들 수정하기
+점수 가운데에 해놓은거 앱솔루트 해서 가운데 정렬하기
+카드 JQKA 숫자로 바꾸기??
 */
