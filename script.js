@@ -92,10 +92,12 @@ const openLeftDeck = [];
 
 // 오른쪽 사이드 덱
 
-const SpadeRight = [];
-const HeartRight = [];
-const CloverRight = [];
-const DiamondRight = [];
+const sidePattern = { // 변수 이름 바꾸기
+    S: [],
+    H: [],
+    D: [],
+    C: []
+}
 
 /* <div class="backward-card-1"><img src="img/backward_orange.svg" alt=""></div>
 <div class="forward-card-1"><img src="img/SA.svg" alt=""></div> */
@@ -123,41 +125,42 @@ function parseColor(card){
     if(card[0] === 'S' || card[0] === 'C') return 'B';
 } // 카드의 색깔을 판별하는 함수
 
-function solveCard(card1, card2) {
-    if (typeof card1 !== 'string' || typeof card2 !== 'string') return false;
+function solveGame(card) {
+    if (typeof card !== 'string') return;
 
-    const sameCard1 = findSameCard(card1);
-    const sameCard2 = findSameCard(card2);
+    const rightDeck = sidePattern[card[0]] // 문양
+    const lastNum = rightDeck[rightDeck.length -1].slice(1);
 
-    if (!sameCard1 || !sameCard2 || sameCard1 !== sameCard2) return false;
+    if(!cardNum.includes(lastNum)) return false;
+    if(card[0] === 'K' && card[0] !== 'A') return false;
 
-    const card1Num = cardNum.indexOf(card1.slice(1));
-    const card2Num = cardNum.indexOf(card2.slice(1));
+    const currentIndex = cardNum.indexOf(lastNum);
+    const cardIndex = cardNum.indexOf(card.slice(1));
+    
+    return cardIndex === (currentIndex + 1) % cardNum.length;
+} // 오른쪽 사이드 부분에 카드 옮겼을 때 유효한지 판별하는 함수
 
-    if (card2Num - card1Num !== 1) return false;
+function shuffleAllDeck(){
+    for(let i = 0; i < deck.length; i++){
+        const j = Math.floor(Math.random() * deck.length);
+        [deck[i], deck[j]] = [deck[j], deck[i]]
+    }
+} // 전체 덱 섞는 함수
+// shuffleAllDeck()
+// console.log(deck)
 
-    return true;
-} // 카드를 옮겼을때 정답인지 아닌지 확인하는 함수
+function shareRandomDeck(){
+    shuffleAllDeck();
 
-// console.log(solveCard('SA','S2'))
+    const randomBoard = deck.slice(0, 28)
+    const randomLeftDeck = deck.slice(28)
 
-function findSameCard(card){
-    if(typeof card !== 'string') return;
-    if(card[0] === 'H') return 'H';
-    if(card[0] === 'D') return 'D';
-    if(card[0] === 'C') return 'C';
-    if(card[0] === 'S') return 'S';
-} // 카드 무늬가 같은지 알아보는 함수
+    area = randomBoard;
+    LeftDeck = randomLeftDeck;
+}
 
-// 드래그 오른쪽으로 했을때 자동으로 가게 만들었으면 좋겠다
 
 function shuffleLeftDeck(){
-    if(!Array.isArray(LeftDeck)) return false;
-
-    for(const card of LeftDeck){
-        if(typeof card !== 'string') return false;
-    }
-
     for(let i = 0; i < LeftDeck.length; i++){
         const j = Math.floor(Math.random() * LeftDeck.length);
         [LeftDeck[i], LeftDeck[j]] = [LeftDeck[j], LeftDeck[i]]
@@ -177,10 +180,9 @@ function getBackLeftCard(){
 
 // 왼쪽 사이드 부분 구현하기 3개짜리로 구현하기 클릭이벤트 넣어서
 
-// getBackLeftCard();
-// console.log(LeftDeck)
-
 function createBoardArea(){
+    shareRandomDeck();
+
     for (let i = 0; i < 7; i++) {
         const cardArea = document.querySelector(`.card-area_${i}`);
         if(!cardArea) continue;
@@ -205,10 +207,10 @@ function createBoardArea(){
 } // 게임판 만드는 함수
 
 function render() {
-  createBoardArea();
+    createBoardArea();
 }
 
-render()
+render();
 
 // 오른쪽 사이드에 카드를 놓았을 때 들어가도 되는지 아닌지 확인하는 알고리즘 (숙제)
 // 왼쪽 카드덱에서 카드가 모두 떨어졌을때 오픈된 카드들(왼쪽 사이드 하단) 회수해서 섞는 알고리즘 (숙제)
@@ -223,3 +225,8 @@ render()
 // 타입 체크 해서 내가 원하지 않은 결과값이 나오면 함수가 실행 되지 않아야 한다(안전장치 만들기)
 
 // 드래그 방식의 어려움 난이도 먼저 구현을 하고 나중에 쉬움은 내가 따로 구현해보는 방식으로 하기
+
+// 힌트 만드는 알고리즘 생각해오기
+// 전체 덱 섞어서 게임판에 놓는 알고리즘 생각해오기 섞기/게임판에 놓기 따로...
+// 왼쪽 사이드 부분 구현 해오기
+// 드래그 오른쪽으로 했을때 자동으로 가게 만들었으면 좋겠다
