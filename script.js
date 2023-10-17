@@ -51,7 +51,7 @@ window.addEventListener('load', startClock);
 
 
 // 전체 덱
-const deck = [
+let deck = [
 'SA', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'SJ', 'SQ', 'SK',
 'DA', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', 'D8', 'D9', 'D10', 'DJ', 'DQ', 'DK',
 'HA', 'H2', 'H3', 'H4', 'H5', 'H6', 'H7', 'H8', 'H9', 'H10', 'HJ', 'HQ', 'HK',
@@ -60,7 +60,7 @@ const deck = [
 
 
 // 게임판
-const area = {
+let area = {
     area0: ['SA'],
     openIndex0: 0,
     area1: ['D2', 'H2'],
@@ -81,18 +81,18 @@ const area = {
 
 
 // 왼쪽 사이드 덱
-const LeftDeck = [
+let leftDeck = [
     'S2', 'SJ', 'SQ',
     'DA', 'D7', 'D8', 'D9', 'DK',
     'HA', 'H3', 'H5', 'H7', 'H8', 'H9', 'HJ', 'HQ',
     'CA', 'C2', 'C7', 'C8', 'C9', 'C10', 'CQ', 'CK'
 ];
 
-const openLeftDeck = [];
+let openLeftDeck = [];
 
 // 오른쪽 사이드 덱
 
-const sidePattern = { // 변수 이름 바꾸기
+let sidePattern = { // 변수 이름 바꾸기
     S: [],
     H: [],
     D: [],
@@ -140,73 +140,131 @@ function solveGame(card) {
     return cardIndex === (currentIndex + 1) % cardNum.length;
 } // 오른쪽 사이드 부분에 카드 옮겼을 때 유효한지 판별하는 함수
 
-function shuffleAllDeck(){
-    for(let i = 0; i < deck.length; i++){
+function shuffleAllDeck() {
+    for (let i = 0; i < deck.length; i++) {
         const j = Math.floor(Math.random() * deck.length);
-        [deck[i], deck[j]] = [deck[j], deck[i]]
+        [deck[i], deck[j]] = [deck[j], deck[i]];
     }
-} // 전체 덱 섞는 함수
-// shuffleAllDeck()
-// console.log(deck)
+} // 전체 덱을 섞는 함수
 
-function shareRandomDeck(){
+function shareRandomDeck() {
     shuffleAllDeck();
 
-    const randomBoard = deck.slice(0, 28)
-    const randomLeftDeck = deck.slice(28)
+    area = {};
+    let startIdx = 0;
 
-    area = randomBoard;
-    LeftDeck = randomLeftDeck;
-}
+    for (let i = 0; i < 7; i++) {
+        const endIdx = startIdx + (i + 1);
+        area[`area${i}`] = deck.slice(startIdx, endIdx);
+        startIdx = endIdx;
+    }
+
+    leftDeck = deck.slice(28);
+} // 덱 자체를 섞어서 왼쪽 덱이랑 게임판에 나누는 함수
 
 
 function shuffleLeftDeck(){
-    for(let i = 0; i < LeftDeck.length; i++){
-        const j = Math.floor(Math.random() * LeftDeck.length);
-        [LeftDeck[i], LeftDeck[j]] = [LeftDeck[j], LeftDeck[i]]
+    for(let i = 0; i < leftDeck.length; i++){
+        const j = Math.floor(Math.random() * leftDeck.length);
+        [leftDeck[i], leftDeck[j]] = [leftDeck[j], leftDeck[i]]
     }
 } // 왼쪽 카드 섞는 알고리즘
 
 function getBackLeftCard(){
-    while(openLeftDeck.length){
-        openLeftDeck.pop();
+    while(leftDeck.length > 2){
+    const threeCards = leftDeck.splice(0,3);
+    openLeftDeck.push(...threeCards);
     }
-} // 오픈한 카드 되돌리는 함수 (쉬움)
-// pop을 쓰면 뒤에 거가 빠짐 그리고 어떤 값이 반환된다
-// 팝 쓰지 말기
-// openLeftDeck을 LeftDeck에 할당하고 openLeftDeck을 비우기
-// 그 담에 레프트덱을 셔플해주기
-// 뽑는거 구현하기
+    if(leftDeck.length > 0){
+        openLeftDeck.push(...leftDeck);
+    }
+    leftDeck = openLeftDeck.slice();
+    openLeftDeck.length = 0;
+} // 오픈한 카드 되돌리는 함수 (3장씩)
 
-// 왼쪽 사이드 부분 구현하기 3개짜리로 구현하기 클릭이벤트 넣어서
+/* 
+<div class="side-left">
+    <div class="left-card-area">
+        <div class="side-empty-card"><img src="img/empty_card_refresh.svg" alt=""></div>
+        <div class="side-backward-card"><img src="img/backward_orange.svg" alt=""></div>
+        <div class="side-forward-card-1"><img src="img/SA.svg" alt=""></div>
+        <div class="side-forward-card-2"><img src="img/HA.svg" alt=""></div>
+        <div class="side-forward-card-3"><img src="img/CA.svg" alt=""></div>
+    </div>
+</div>
+*/
+    // 섞기 버튼
+    // const $emptyCard = document.createElement('div');
+    // $emptyCard.className = 'side-empty-card';
+    
+    // const $emptyCardImg = document.createElement('img');
+    // $emptyCardImg.src = 'img/empty_card_refresh.svg';
+    // $emptyCard.appendChild($emptyCardImg);
 
-function createBoardArea(){
-    shareRandomDeck();
+function createLeftDeckArea() {
+    const $leftDeckArea = document.querySelector('.left-card-area');
+    $leftDeckArea.innerHTML = '';
 
+    // 뒷면 카드
+    const $sideBackCard = document.createElement('div');
+    $sideBackCard.className = 'side-backward-card';
+    const $sideBackImg = document.createElement('img');
+    $sideBackImg.src = imgFind('backward_orange');
+
+    $sideBackCard.addEventListener('click', () => {
+        for (let i = 0; i < 3; i++) {
+            if (leftDeck.length > i) {
+                const $forwardCard = document.createElement('div');
+                $forwardCard.className = `side-forward-card side-forward-card-${i + 1}`;
+                const $img = document.createElement('img');
+                $img.src = imgFind(leftDeck[i]);
+                $forwardCard.appendChild($img);
+                $leftDeckArea.appendChild($forwardCard);
+            }
+        }
+    });
+
+    $sideBackCard.appendChild($sideBackImg);
+    $leftDeckArea.appendChild($sideBackCard);
+}
+
+
+function createBoardArea() {
     for (let i = 0; i < 7; i++) {
         const cardArea = document.querySelector(`.card-area_${i}`);
-        if(!cardArea) continue;
-        
+        if (!cardArea) continue;
+
         const cards = area['area' + i];
-        const openIndex = area['openIndex' + i];
-        let temp = '';
+        cardArea.innerHTML = '';
 
         for (let j = 0; j < cards.length; j++) {
-          if (j >= openIndex) {
-            const forwardImagePath = imgFind(cards[j]);
-            const forwardClass = `forward-card-${j}`;
-            temp += `<div class="${forwardClass} area${i}"><img src="${forwardImagePath}"></div>`;
-          } else {
-            const backwardImagePath = 'img/backward_orange.svg';
-            const backwardClass = `backward-card-${j}`;
-            temp += `<div class="${backwardClass} area${i}"><img src="${backwardImagePath}"></div>`;
-          }
+            const cardElement = document.createElement('div');
+            const cardImagePath = (j === cards.length - 1) ? imgFind(cards[j]) : 'img/backward_orange.svg';
+            cardElement.innerHTML = `<img src="${cardImagePath}">`;
+            cardElement.className = (j === cards.length - 1) ? `forward-card-${j} area${i}` : `backward-card-${j} area${i}`;
+
+            if (j === cards.length - 1) {
+                cardElement.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                });
+            } else {
+                cardElement.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    if (!checkCard()) console.log('false');
+                    else console.log('true');
+                });
+            }
+
+            cardArea.appendChild(cardElement);
         }
-        cardArea.innerHTML = temp;
     }
 } // 게임판 만드는 함수
 
+
+
 function render() {
+    shareRandomDeck();
+    createLeftDeckArea();
     createBoardArea();
 }
 
