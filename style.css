@@ -355,12 +355,15 @@ html, body{
 
 /*side-left*/
 
-.side-backward-card{
+.side-empty-card,
+.side-backward-card {
     width: 60px;
     margin-top: 26px;
-    padding-bottom: 20px;
     box-shadow: 2px 2px 5px #333;
+    /* position: absolute;
+    margin: 0; */
 }
+
 
 .side-forward-card-1{
     width: 60px;
