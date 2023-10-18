@@ -246,12 +246,12 @@ function createBoardArea() {
             if (j === cards.length - 1) {
                 cardElement.addEventListener('dragover', (e) => {
                     e.preventDefault();
+                    if (!checkCard()) console.log('false'); // checkCard() 안에 인자 2개 넣어야 할 것 같은데 어떻게 넣어야 할지 감이 안 옴
+                    else console.log('true');
                 });
             } else {
                 cardElement.addEventListener('drop', (e) => {
                     e.preventDefault();
-                    if (!checkCard()) console.log('false');
-                    else console.log('true');
                 });
             }
 
