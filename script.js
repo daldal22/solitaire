@@ -125,11 +125,11 @@ function parseColor(card){
     if(card[0] === 'S' || card[0] === 'C') return 'B';
 } // 카드의 색깔을 판별하는 함수
 
-function solveGame(card) {
+function solveGame(card) { // 함수 이름 바꾸기 다시 만들기
     if (typeof card !== 'string') return;
 
-    const rightDeck = sidePattern[card[0]] // 문양
-    const lastNum = rightDeck[rightDeck.length -1].slice(1);
+    const rightDeck = card[0] // 문양
+    const lastNum = card.slice(1);
 
     if(!cardNum.includes(lastNum)) return false;
     if(card[0] === 'K' && card[0] !== 'A') return false;
@@ -139,6 +139,31 @@ function solveGame(card) {
     
     return cardIndex === (currentIndex + 1) % cardNum.length;
 } // 오른쪽 사이드 부분에 카드 옮겼을 때 유효한지 판별하는 함수
+
+function findHint() {
+    for (let i = 0; i < 7; i++) {
+        const cards = area['area' + i];
+        for (let j = 0; j < cards.length; j++) {
+            const currentCard = cards[j];
+            const targetCard = cards[cards.length - 1];
+            if (checkCard(currentCard, targetCard) && solveGame(currentCard)) {
+                console.log('힌트: 현재 카드를 옮길 수 있음');
+                return;
+            }
+        }
+    }
+    // 카드에 관한 힌트 서치 필요함
+    // 왼쪽 사이드 카드에 대한 경우도 필요함
+    // 카드[j] 필요없음 뒷면 전체도 확인 필요없음
+    // 카드 하나 선택해서 에리어 돌면서 확인해야함
+    // 규칙 다시 살펴보기
+    console.log('힌트: 현재 위치에서 더 이상 옮길 수 있는 카드가 없음');
+}
+
+const hintButton = document.querySelector('.hint-btn');
+hintButton.addEventListener('click', findHint);
+
+
 
 function shuffleAllDeck() {
     for (let i = 0; i < deck.length; i++) {
@@ -223,11 +248,40 @@ function createLeftDeckArea() {
             }
         }
     });
+    // 뽑을 카드 배열이 있어야함 뽑은 카드 배열에서 끝에서 3장이 화면에 보여야 함
+    // 카드를 새로 뽑거나 맨 끝에 있는 카드를 사용할 때마다 3장을 갱신해야함 3장만 쌓여있을 때 하나 쓰면 2개, 두개 쓰면 1개만 보이게
+    // 레프트 덱을 클릭했을 때, 뽑은 카드 배열에 3개 카드를 추가함(이 기능 담은 함수 필요함)
+    // 배열에 추가하는 함수, 마지막 3개 카드를 보이게 업데이트 하는 함수 (덱을 눌렀을때 이 두개 한번에 호출해야함)
+    // 뽑힌 카드(보이는 3개 카드) 중에서 1장 썼을 때, 배열에 남은 카드들 기준으로 화면 업데이트 해야함(마지막 3개카드 함수 사용)
 
     $sideBackCard.appendChild($sideBackImg);
     $leftDeckArea.appendChild($sideBackCard);
 }
 
+function dragStart(e) {
+    const classList = e.currentTarget.classList;
+    const index = classList[0].slice(13);
+    const area = classList[1];
+    e.dataTransfer.setData('index', index);
+    e.dataTransfer.setData('area', area);
+}
+
+function dragOver(e) {
+    e.preventDefault();
+}
+
+function drop(e) {
+    e.preventDefault();
+
+    const index = e.dataTransfer.getData('index');
+    const areaName = e.dataTransfer.getData('area');
+
+    const card = area[areaName][index];
+
+    console.log('dropped at endpoint:', e.target); // 카드 이름 뜨게 하기 이미지 뜨게하지 말기
+    console.log('dragged card index:', index);
+    console.log('drag start:', card);
+}
 
 function createBoardArea() {
     for (let i = 0; i < 7; i++) {
@@ -239,28 +293,25 @@ function createBoardArea() {
 
         for (let j = 0; j < cards.length; j++) {
             const cardElement = document.createElement('div');
-            const cardImagePath = (j === cards.length - 1) ? imgFind(cards[j]) : 'img/backward_orange.svg';
-            cardElement.innerHTML = `<img src="${cardImagePath}">`;
-            cardElement.className = (j === cards.length - 1) ? `forward-card-${j} area${i}` : `backward-card-${j} area${i}`;
-
-            if (j === cards.length - 1) {
-                cardElement.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    if (!checkCard()) console.log('false'); // checkCard() 안에 인자 2개 넣어야 할 것 같은데 어떻게 넣어야 할지 감이 안 옴
-                    else console.log('true');
-                });
-            } else {
-                cardElement.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                });
+            let imgPath,className
+            if(j === cards.length - 1){
+                imgPath = imgFind(cards[j]);
+                className = `forward-card-${j} area${i}`;
+                cardElement.addEventListener('dragstart', dragStart);
+            } else{
+                imgPath = 'img/backward_orange.svg';
+                className = `backward-card-${j} area${i}`;
             }
+            cardElement.innerHTML = `<img src="${imgPath}">`;
+            cardElement.className = className;
 
-            cardArea.appendChild(cardElement);
+            cardElement.addEventListener('dragover', dragOver);
+            cardElement.addEventListener('drop', drop);
+
+            cardArea.appendChild(cardElement);            
         }
     }
 } // 게임판 만드는 함수
-
-
 
 function render() {
     shareRandomDeck();
@@ -270,11 +321,7 @@ function render() {
 
 render();
 
-// 오른쪽 사이드에 카드를 놓았을 때 들어가도 되는지 아닌지 확인하는 알고리즘 (숙제)
-// 왼쪽 카드덱에서 카드가 모두 떨어졌을때 오픈된 카드들(왼쪽 사이드 하단) 회수해서 섞는 알고리즘 (숙제)
-
 // 카드 덱을 랜덤으로 섞는 알고리즘
-// 게임판 내에서 카드가 해당 위치에 들어가도 되는지 확인하는 알고리즘 (했음)
 // 되돌리기 버튼 누르면 이전 단계로 돌아가는 알고리즘
 // 점수판 점수 올리고 내리는 규칙에 따라 숫자 바뀌는 알고리즘
 
@@ -284,7 +331,16 @@ render();
 
 // 드래그 방식의 어려움 난이도 먼저 구현을 하고 나중에 쉬움은 내가 따로 구현해보는 방식으로 하기
 
-// 힌트 만드는 알고리즘 생각해오기
-// 전체 덱 섞어서 게임판에 놓는 알고리즘 생각해오기 섞기/게임판에 놓기 따로...
-// 왼쪽 사이드 부분 구현 해오기
 // 드래그 오른쪽으로 했을때 자동으로 가게 만들었으면 좋겠다
+
+// 에리어 0~6까지 모두 확인해서 이동할 수 있으면 힌트 배열에 추가
+
+// 카드 클릭하면 힌트 콘솔로그에 찍기
+// 드래그 끝나는 카드(엔드포인트) 좌표값 찾아오기
+
+
+// 되돌리기 알고리즘:
+// 카드를 이동하기 전에 솔리테어 게임판의 배열들을 객체로 저장한다
+// 임의로 카드를 옮긴 상태의 배열들을 업데이트객체(가제)로 저장한다
+// 되돌리기 버튼을 누르면 카드를 이동하기 전 상태의 객체를 불러온다
+// 업데이트 객체를 초기화 한다(빈객체)
