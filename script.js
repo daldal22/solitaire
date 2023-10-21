@@ -90,6 +90,8 @@ let leftDeck = [
 
 let openLeftDeck = [];
 
+let visibleCard = 0;
+
 // 오른쪽 사이드 덱
 
 let sidePattern = { // 변수 이름 바꾸기
@@ -125,40 +127,59 @@ function parseColor(card){
     if(card[0] === 'S' || card[0] === 'C') return 'B';
 } // 카드의 색깔을 판별하는 함수
 
-function solveGame(card) { // 함수 이름 바꾸기 다시 만들기
-    if (typeof card !== 'string') return;
+function isCardValid(card) {
+    if (typeof card !== 'string') return false;
 
-    const rightDeck = card[0] // 문양
-    const lastNum = card.slice(1);
+    const suit = card[0];
+    const number = card.slice(1);
 
-    if(!cardNum.includes(lastNum)) return false;
-    if(card[0] === 'K' && card[0] !== 'A') return false;
+    if (!['S', 'H', 'D', 'C'].includes(suit) || (!cardNum.includes(number) && number !== '10')) {
+        console.log('Invalid card format');
+        return false;
+    }
 
-    const currentIndex = cardNum.indexOf(lastNum);
-    const cardIndex = cardNum.indexOf(card.slice(1));
-    
-    return cardIndex === (currentIndex + 1) % cardNum.length;
-} // 오른쪽 사이드 부분에 카드 옮겼을 때 유효한지 판별하는 함수
+    return true;
+} // 카드가 유효한지 알아보는 함수
 
-function findHint() {
+function moveAnswer(card) {
+    if (!isCardValid(card)) return;
+    const suit = card[0];
+    sidePattern[suit].push(card);
+}
+ // 오른쪽 사이드 부분에 카드 옮기는 함수
+
+ function findHint() {
+    let hintFound = false;
+
     for (let i = 0; i < 7; i++) {
-        const cards = area['area' + i];
-        for (let j = 0; j < cards.length; j++) {
-            const currentCard = cards[j];
-            const targetCard = cards[cards.length - 1];
-            if (checkCard(currentCard, targetCard) && solveGame(currentCard)) {
-                console.log('힌트: 현재 카드를 옮길 수 있음');
-                return;
+    const currentCard = area['area' + i][area['area' + i].length - 1];
+    if (isCardValid(currentCard)) {
+    for (let j = 0; j < 7; j++) {
+        if (i !== j) {
+            const cardJ = area['area' + j][area['area' + j].length - 1];
+            if (checkCard(currentCard, cardJ)) {
+                console.log('힌트: 다른 에리어로 옮길 수 있음');
+                hintFound = true;
+                break;
+                }
             }
         }
     }
-    // 카드에 관한 힌트 서치 필요함
-    // 왼쪽 사이드 카드에 대한 경우도 필요함
-    // 카드[j] 필요없음 뒷면 전체도 확인 필요없음
-    // 카드 하나 선택해서 에리어 돌면서 확인해야함
-    // 규칙 다시 살펴보기
+    if (hintFound) {
+        break;
+        }
+    }
+
+    if (!hintFound) {
     console.log('힌트: 현재 위치에서 더 이상 옮길 수 있는 카드가 없음');
+    }
 }
+
+// 카드에 관한 힌트 서치 필요함
+// 왼쪽 사이드 카드에 대한 경우도 필요함
+// 카드[j] 필요없음 뒷면 전체도 확인 필요없음
+// 카드 하나 선택해서 에리어 돌면서 확인해야함
+// 규칙 다시 살펴보기
 
 const hintButton = document.querySelector('.hint-btn');
 hintButton.addEventListener('click', findHint);
@@ -218,45 +239,74 @@ function getBackLeftCard(){
     </div>
 </div>
 */
-    // 섞기 버튼
-    // const $emptyCard = document.createElement('div');
-    // $emptyCard.className = 'side-empty-card';
-    
-    // const $emptyCardImg = document.createElement('img');
-    // $emptyCardImg.src = 'img/empty_card_refresh.svg';
-    // $emptyCard.appendChild($emptyCardImg);
+const $leftDeckArea = document.querySelector('.left-card-area');
+
 
 function createLeftDeckArea() {
-    const $leftDeckArea = document.querySelector('.left-card-area');
-    $leftDeckArea.innerHTML = '';
+    // 섞기 버튼
+    const $emptyCard = document.createElement('div');
+    $emptyCard.className = 'side-empty-card';
 
-    // 뒷면 카드
+    const $emptyCardImg = document.createElement('img');
+    $emptyCardImg.src = 'img/empty_card_refresh.svg';
+    $emptyCard.appendChild($emptyCardImg);
+
     const $sideBackCard = document.createElement('div');
     $sideBackCard.className = 'side-backward-card';
     const $sideBackImg = document.createElement('img');
     $sideBackImg.src = imgFind('backward_orange');
 
     $sideBackCard.addEventListener('click', () => {
-        for (let i = 0; i < 3; i++) {
-            if (leftDeck.length > i) {
-                const $forwardCard = document.createElement('div');
-                $forwardCard.className = `side-forward-card side-forward-card-${i + 1}`;
-                const $img = document.createElement('img');
-                $img.src = imgFind(leftDeck[i]);
-                $forwardCard.appendChild($img);
-                $leftDeckArea.appendChild($forwardCard);
+            if (leftDeck.length > 2) {
+                drawThreeCards();
+            } else if(leftDeck.length === 0) {
+                $sideBackCard.style.visibility = 'hidden';
+                $emptyCard.style.visibility = 'visible';
             }
+    });
+
+    $emptyCard.addEventListener('click', () => {
+        if (openLeftDeck.length > 2) {
+            leftDeck = shuffleLeftDeck(openLeftDeck);
+            openLeftDeck = [];
+            $emptyCard.style.visibility = 'hidden';
+            $sideBackCard.style.visibility = 'visible';
         }
     });
-    // 뽑을 카드 배열이 있어야함 뽑은 카드 배열에서 끝에서 3장이 화면에 보여야 함
-    // 카드를 새로 뽑거나 맨 끝에 있는 카드를 사용할 때마다 3장을 갱신해야함 3장만 쌓여있을 때 하나 쓰면 2개, 두개 쓰면 1개만 보이게
-    // 레프트 덱을 클릭했을 때, 뽑은 카드 배열에 3개 카드를 추가함(이 기능 담은 함수 필요함)
-    // 배열에 추가하는 함수, 마지막 3개 카드를 보이게 업데이트 하는 함수 (덱을 눌렀을때 이 두개 한번에 호출해야함)
-    // 뽑힌 카드(보이는 3개 카드) 중에서 1장 썼을 때, 배열에 남은 카드들 기준으로 화면 업데이트 해야함(마지막 3개카드 함수 사용)
 
     $sideBackCard.appendChild($sideBackImg);
+    $leftDeckArea.appendChild($emptyCard);
     $leftDeckArea.appendChild($sideBackCard);
 }
+
+function clearLeftDeckArea() {
+    const $leftDeckArea = document.querySelector('.left-card-area');
+    const $cards = $leftDeckArea.getElementsByClassName('side-forward-card');
+    while ($cards.length > 0) {
+        $leftDeckArea.removeChild($cards[0]);
+    }
+}
+
+function drawThreeCards() {
+    for (let i = 0; i < 3; i++) {
+        if (leftDeck.length > 0) {
+            const card = leftDeck.shift();
+            openLeftDeck.push(card);
+            const $forwardCard = document.createElement('div');
+            $forwardCard.className = `side-forward-card-${i + 1}`;
+            const $img = document.createElement('img');
+            $img.src = imgFind(card);
+            $forwardCard.appendChild($img);
+            $leftDeckArea.appendChild($forwardCard);
+        }
+    }
+}
+
+// 뽑을 카드 배열이 있어야함 뽑은 카드 배열에서 끝에서 3장이 화면에 보여야 함
+// 카드를 새로 뽑거나 맨 끝에 있는 카드를 사용할 때마다 3장을 갱신해야함 3장만 쌓여있을 때 하나 쓰면 2개, 두개 쓰면 1개만 보이게
+// 레프트 덱을 클릭했을 때, 뽑은 카드 배열에 3개 카드를 추가함(이 기능 담은 함수 필요함)
+// 배열에 추가하는 함수, 마지막 3개 카드를 보이게 업데이트 하는 함수 (덱을 눌렀을때 이 두개 한번에 호출해야함)
+// 뽑힌 카드(보이는 3개 카드) 중에서 1장 썼을 때, 배열에 남은 카드들 기준으로 화면 업데이트 해야함(마지막 3개카드 함수 사용)
 
 function dragStart(e) {
     const classList = e.currentTarget.classList;
@@ -278,10 +328,14 @@ function drop(e) {
 
     const card = area[areaName][index];
 
-    console.log('dropped at endpoint:', e.target); // 카드 이름 뜨게 하기 이미지 뜨게하지 말기
-    console.log('dragged card index:', index);
-    console.log('drag start:', card);
+    const endpointElement = e.target;
+    const endpointInfo = endpointElement.innerText;
+
+    console.log('Dropped at endpoint:', endpointInfo);
+    console.log('Dragged card index:', index);
+    console.log('Drag start:', card);
 }
+
 
 function createBoardArea() {
     for (let i = 0; i < 7; i++) {
