@@ -260,8 +260,7 @@ function createLeftDeckArea() {
 
     $emptyCard.addEventListener('click', () => {
         if (openLeftDeck.length > 2) {
-            shuffleLeftDeck(openLeftDeck);
-            openLeftDeck = [];
+            getBackLeftCard();
             clearLeftDeckArea();
             $emptyCard.style.visibility = 'hidden';
             $sideBackCard.style.visibility = 'visible';
