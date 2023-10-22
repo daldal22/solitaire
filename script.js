@@ -165,14 +165,9 @@ function moveAnswer(card) {
             }
         }
     }
-    if (hintFound) {
-        break;
-        }
+    if (hintFound) break;
     }
-
-    if (!hintFound) {
-    console.log('힌트: 현재 위치에서 더 이상 옮길 수 있는 카드가 없음');
-    }
+    if (!hintFound) console.log('힌트: 현재 위치에서 더 이상 옮길 수 있는 카드가 없음');
 }
 
 // 카드에 관한 힌트 서치 필요함
@@ -326,11 +321,15 @@ function drop(e) {
     const index = e.dataTransfer.getData('index');
     const areaName = e.dataTransfer.getData('area');
 
-    const card = area[areaName][index];
-
-    console.log('Dropped at endpoint:', e.target);
+    const droppedImage = e.target;
+    
+    const srcAttribute = droppedImage.getAttribute('src');
+    const cardElementName = srcAttribute.split('/').pop().split('.')[0];
+    //<img src="img/S10.svg">
+    
+    console.log('Dropped at endpoint:', cardElementName);
     console.log('Dragged card index:', index);
-    console.log('Drag start:', card);
+    console.log('Drag start:', area[areaName][index]);
 }
 
 
