@@ -266,7 +266,7 @@ function createLeftDeckArea() {
     });
 
     $emptyCard.addEventListener('click', () => {
-        if (openLeftDeck.length > 2) {
+        if (leftDeck.length === 0) {
             leftDeck = shuffleLeftDeck(openLeftDeck);
             openLeftDeck = [];
             $emptyCard.style.visibility = 'hidden';
@@ -328,10 +328,7 @@ function drop(e) {
 
     const card = area[areaName][index];
 
-    const endpointElement = e.target;
-    const endpointInfo = endpointElement.innerText;
-
-    console.log('Dropped at endpoint:', endpointInfo);
+    console.log('Dropped at endpoint:', e.target);
     console.log('Dragged card index:', index);
     console.log('Drag start:', card);
 }
