@@ -360,8 +360,14 @@ html, body{
     width: 60px;
     margin-top: 26px;
     box-shadow: 2px 2px 5px #333;
-    /* position: absolute;
-    margin: 0; */
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
+}
+
+.side-backward-card {
+    z-index: 0;
+    transition: opacity 0.3s;
 }
 
 
@@ -369,6 +375,8 @@ html, body{
     width: 60px;
     top: 140px;
     position: absolute;
+    left: 50%;
+    transform: translate(-50%);
     box-shadow: 2px 2px 5px #333;
 }
 
@@ -376,6 +384,8 @@ html, body{
     width: 60px;
     top: 160px;
     position: absolute;
+    left: 50%;
+    transform: translate(-50%);
     box-shadow: 2px 2px 5px #333;
 }
 
@@ -383,6 +393,8 @@ html, body{
     width: 60px;
     position: absolute;
     top: 180px;
+    left: 50%;
+    transform: translate(-50%);
     box-shadow: 2px 2px 5px #333;
 }
 
@@ -412,7 +424,17 @@ html, body{
     background: #fff;
     color: #35403A;
     font-size: 16px;
-    margin-top: 40px;
+    margin-top: 20px;
+    box-shadow: 2px 2px 5px #333;
+}
+
+.fa-lightbulb{
+    border-radius: 300px;
+    padding: 16px;
+    background: #fff;
+    color: #35403A;
+    font-size: 16px;
+    margin-top: 20px;
     box-shadow: 2px 2px 5px #333;
 }
 
