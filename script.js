@@ -179,8 +179,6 @@ function moveAnswer(card) {
 const hintButton = document.querySelector('.hint-btn');
 hintButton.addEventListener('click', findHint);
 
-
-
 function shuffleAllDeck() {
     for (let i = 0; i < deck.length; i++) {
         const j = Math.floor(Math.random() * deck.length);
@@ -261,9 +259,10 @@ function createLeftDeckArea() {
     });
 
     $emptyCard.addEventListener('click', () => {
-        if (leftDeck.length === 0) {
-            leftDeck = shuffleLeftDeck(openLeftDeck);
+        if (openLeftDeck.length > 2) {
+            shuffleLeftDeck(openLeftDeck);
             openLeftDeck = [];
+            clearLeftDeckArea();
             $emptyCard.style.visibility = 'hidden';
             $sideBackCard.style.visibility = 'visible';
         }
@@ -371,7 +370,6 @@ function render() {
 
 render();
 
-// 카드 덱을 랜덤으로 섞는 알고리즘
 // 되돌리기 버튼 누르면 이전 단계로 돌아가는 알고리즘
 // 점수판 점수 올리고 내리는 규칙에 따라 숫자 바뀌는 알고리즘
 
@@ -384,10 +382,6 @@ render();
 // 드래그 오른쪽으로 했을때 자동으로 가게 만들었으면 좋겠다
 
 // 에리어 0~6까지 모두 확인해서 이동할 수 있으면 힌트 배열에 추가
-
-// 카드 클릭하면 힌트 콘솔로그에 찍기
-// 드래그 끝나는 카드(엔드포인트) 좌표값 찾아오기
-
 
 // 되돌리기 알고리즘:
 // 카드를 이동하기 전에 솔리테어 게임판의 배열들을 객체로 저장한다
