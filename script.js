@@ -121,14 +121,15 @@ function checkCard(card1, card2){
     return true;
 } // 카드가 해당 위치에 있어도 되는지 확인하는 함수
 
-function parseColor(card){
-    if(typeof card !== 'string') return;
-    if(card[0] === 'H' || card[0] === 'D') return 'R';
-    if(card[0] === 'S' || card[0] === 'C') return 'B';
+function parseColor(card) {
+    if (typeof card !== 'string') return;
+    if (card[0] === 'H' || card[0] === 'D') return 'R';
+    if (card[0] === 'S' || card[0] === 'C') return 'B';
+    return '';
 } // 카드의 색깔을 판별하는 함수
 
 function isCardValid(card) {
-    if (typeof card !== 'string') return false;
+    if (typeof card !== 'string') return;
 
     const suit = card[0];
     const number = card.slice(1);
@@ -141,34 +142,122 @@ function isCardValid(card) {
     return true;
 } // 카드가 유효한지 알아보는 함수
 
+function isSideValid(card) {
+    if (!isCardValid(card)) return false;
+
+    const suit = card[0];
+
+    const topCard = sidePattern[suit][sidePattern[suit].length - 1];
+
+    if (!topCard) {
+        return card.slice(1) === 'A';
+    }
+
+    const topCardNum = cardNum.indexOf(getCardNumber(topCard));
+    const currentCardNum = cardNum.indexOf(getCardNumber(card));
+
+    return topCardNum + 1 === currentCardNum;
+} // 오른쪽으로 옮겨도 유효한지 판단하는 함수
+
+function getCardNumber(card) {    
+    const numberPart = card.slice(1);
+    if (numberPart === '10') {
+        return '10';
+    } else {
+        return numberPart;
+    }
+} // 카드 문자열에서 숫자 부분을 추출
+
+
 function moveAnswer(card) {
     if (!isCardValid(card)) return;
     const suit = card[0];
     sidePattern[suit].push(card);
 }
  // 오른쪽 사이드 부분에 카드 옮기는 함수
+ 
+let hintFound = false;
 
- function findHint() {
-    let hintFound = false;
+function findHint() {
 
+    findGameBoardHint();
+    findLeftDeckHint();
+    moveLeftDeckHint();
+    moveGameBoardHint();
+
+    if (!hintFound) console.log('힌트: 현재 위치에서 더 이상 옮길 수 있는 카드가 없음');
+}
+
+function findGameBoardHint(){
     for (let i = 0; i < 7; i++) {
-    const currentCard = area['area' + i][area['area' + i].length - 1];
-    if (isCardValid(currentCard)) {
-    for (let j = 0; j < 7; j++) {
-        if (i !== j) {
-            const cardJ = area['area' + j][area['area' + j].length - 1];
-            if (checkCard(currentCard, cardJ)) {
-                console.log('힌트: 다른 에리어로 옮길 수 있음');
-                hintFound = true;
-                break;
+        const currentCard = area['area' + i][area['area' + i].length - 1];
+        if (isCardValid(currentCard)) {
+            for (let j = 0; j < 7; j++) {
+                if (i !== j) {
+                    const cardJ = area['area' + j][area['area' + j].length - 1];
+                    if (checkCard(currentCard, cardJ)) {
+                        console.log('힌트: 게임 보드 내에서 카드를 옮길 수 있음');
+                        hintFound = true;
+                        return;
+                    }
                 }
             }
         }
     }
-    if (hintFound) break;
-    }
-    if (!hintFound) console.log('힌트: 현재 위치에서 더 이상 옮길 수 있는 카드가 없음');
 }
+
+function findLeftDeckHint(){
+    for (let i = 0; i < openLeftDeck.length; i += 3) {
+        const currentCard = openLeftDeck[i];
+
+        for (let j = 0; j < openLeftDeck.length; j++) {
+            if (i !== j) {
+                const cardJ = openLeftDeck[j];
+                if (checkCard(currentCard, cardJ)) {
+                    console.log('힌트: 오픈된 덱에서 게임 보드로 카드를 옮길 수 있음');
+                    hintFound = true;
+                    return;
+                }
+            }
+        }
+    }
+}
+
+function moveLeftDeckHint() {
+    for (let i = 0; i < openLeftDeck.length; i += 3) {
+        const currentCard = openLeftDeck[i];
+
+        for (let j = i + 3; j < openLeftDeck.length; j += 3) {
+            const cardJ = openLeftDeck[j];
+            if (isSideValid(currentCard, cardJ)) {
+                console.log('힌트: 오픈된 덱에서 정답 칸으로 카드를 옮길 수 있음');
+                hintFound = true;
+                return;
+            }
+        }
+    }
+}
+
+function moveGameBoardHint() {
+    const pattern = ['S', 'H', 'D', 'C'];
+
+    for (let i = 0; i < 7; i++) {
+        const currentCard = area['area' + i][area['area' + i].length - 1];
+        if (isCardValid(currentCard)) {
+            for (let j = 0; j < 4; j++) {
+                const suit = pattern[j];
+                const cardJ = sidePattern[suit][sidePattern[suit].length - 1];
+                if (isSideValid(currentCard, cardJ)) {
+                    console.log('힌트: 게임 보드에서 오른쪽 사이드로 카드를 옮길 수 있음');
+                    hintFound = true;
+                    return;
+                }
+            }
+        }
+    }
+}
+
+
 
 // 카드에 관한 힌트 서치 필요함
 // 왼쪽 사이드 카드에 대한 경우도 필요함
@@ -221,6 +310,29 @@ function getBackLeftCard(){
     openLeftDeck.length = 0;
 } // 오픈한 카드 되돌리는 함수 (3장씩)
 
+function clearLeftDeckArea() {
+    const $leftDeckArea = document.querySelector('.left-card-area');
+    const $cards = $leftDeckArea.getElementsByClassName('side-forward-card');
+    while ($cards.length > 0) {
+        $leftDeckArea.removeChild($cards[0]);
+    }
+} // 레프트덱 초기화
+
+function drawThreeCards() {
+    for (let i = 0; i < 3; i++) {
+        if (leftDeck.length > 0) {
+            const card = leftDeck.shift();
+            openLeftDeck.push(card);
+            const $forwardCard = document.createElement('div');
+            $forwardCard.className = `side-forward-card-${i + 1}`;
+            const $img = document.createElement('img');
+            $img.src = imgFind(card);
+            $forwardCard.appendChild($img);
+            $leftDeckArea.appendChild($forwardCard);
+        }
+    }
+} // 카드 뽑기
+
 /* 
 <div class="side-left">
     <div class="left-card-area">
@@ -256,12 +368,14 @@ function createLeftDeckArea() {
                 $sideBackCard.style.visibility = 'hidden';
                 $emptyCard.style.visibility = 'visible';
             }
+            console.log('openLeftDeck:', openLeftDeck);
     });
 
     $emptyCard.addEventListener('click', () => {
         if (openLeftDeck.length > 2) {
             getBackLeftCard();
             clearLeftDeckArea();
+            shuffleLeftDeck();
             $emptyCard.style.visibility = 'hidden';
             $sideBackCard.style.visibility = 'visible';
         }
@@ -272,28 +386,7 @@ function createLeftDeckArea() {
     $leftDeckArea.appendChild($sideBackCard);
 }
 
-function clearLeftDeckArea() {
-    const $leftDeckArea = document.querySelector('.left-card-area');
-    const $cards = $leftDeckArea.getElementsByClassName('side-forward-card');
-    while ($cards.length > 0) {
-        $leftDeckArea.removeChild($cards[0]);
-    }
-}
 
-function drawThreeCards() {
-    for (let i = 0; i < 3; i++) {
-        if (leftDeck.length > 0) {
-            const card = leftDeck.shift();
-            openLeftDeck.push(card);
-            const $forwardCard = document.createElement('div');
-            $forwardCard.className = `side-forward-card-${i + 1}`;
-            const $img = document.createElement('img');
-            $img.src = imgFind(card);
-            $forwardCard.appendChild($img);
-            $leftDeckArea.appendChild($forwardCard);
-        }
-    }
-}
 
 // 뽑을 카드 배열이 있어야함 뽑은 카드 배열에서 끝에서 3장이 화면에 보여야 함
 // 카드를 새로 뽑거나 맨 끝에 있는 카드를 사용할 때마다 3장을 갱신해야함 3장만 쌓여있을 때 하나 쓰면 2개, 두개 쓰면 1개만 보이게
@@ -359,6 +452,7 @@ function createBoardArea() {
             cardArea.appendChild(cardElement);            
         }
     }
+    
 } // 게임판 만드는 함수
 
 function render() {
