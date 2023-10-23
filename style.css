@@ -371,13 +371,14 @@ html, body{
 }
 
 
-.side-forward-card-1{
+.side-forward-card-3{
     width: 60px;
     top: 140px;
     position: absolute;
     left: 50%;
     transform: translate(-50%);
     box-shadow: 2px 2px 5px #333;
+    z-index: 1;
 }
 
 .side-forward-card-2{
@@ -387,15 +388,17 @@ html, body{
     left: 50%;
     transform: translate(-50%);
     box-shadow: 2px 2px 5px #333;
+    z-index: 2;
 }
 
-.side-forward-card-3{
+.side-forward-card-1{
     width: 60px;
     position: absolute;
     top: 180px;
     left: 50%;
     transform: translate(-50%);
     box-shadow: 2px 2px 5px #333;
+    z-index: 3;
 }
 
 /*side-right*/
