@@ -1,3 +1,8 @@
+import area from "script/module/area.js"
+import deck from "script/module/deck.js"
+import { leftDeck, openLeftDeck } from "script/module/leftSide.js"
+import sidePattern from "script/module/rightSide.js"
+
 let timerId;
 let isRunning = false;
 let elapsedTime = 0;
@@ -50,6 +55,7 @@ window.addEventListener('load', startClock);
 
 
 
+
 // 전체 덱
 let deck = [
 'SA', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'SJ', 'SQ', 'SK',
@@ -89,8 +95,7 @@ let leftDeck = [
 ];
 
 let openLeftDeck = [];
-
-let visibleCard = 0;
+let movedLeftDeck = [];
 
 // 오른쪽 사이드 덱
 
@@ -101,14 +106,12 @@ let sidePattern = { // 변수 이름 바꾸기
     C: []
 }
 
-/* <div class="backward-card-1"><img src="img/backward_orange.svg" alt=""></div>
-<div class="forward-card-1"><img src="img/SA.svg" alt=""></div> */
-
 function imgFind(image) {
     return `img/${image}.svg`;
 } // 이미지 경로 찾는 함수
 
 const cardNum = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+
 
 function checkCard(card1, card2){
     if(typeof card1 !== 'string' || typeof card2 !== 'string') return;
@@ -117,7 +120,10 @@ function checkCard(card1, card2){
     
     const card1Num = cardNum.indexOf(card1.slice(1))
     const card2Num = cardNum.indexOf(card2.slice(1))
-    if(card2Num - card1Num !== 1) return false;
+    if (card2Num - card1Num !== 1) {
+        // console.log('Number check failed:', card1, card2);
+        return false;
+    }
     return true;
 } // 카드가 해당 위치에 있어도 되는지 확인하는 함수
 
@@ -128,145 +134,96 @@ function parseColor(card) {
     return '';
 } // 카드의 색깔을 판별하는 함수
 
-function isCardValid(card) {
-    if (typeof card !== 'string') return;
-
-    const suit = card[0];
-    const number = card.slice(1);
-
-    if (!['S', 'H', 'D', 'C'].includes(suit) || (!cardNum.includes(number) && number !== '10')) {
-        console.log('Invalid card format');
-        return false;
-    }
-
-    return true;
-} // 카드가 유효한지 알아보는 함수
-
 function isSideValid(card) {
-    if (!isCardValid(card)) return false;
-
     const suit = card[0];
-
-    const topCard = sidePattern[suit][sidePattern[suit].length - 1];
+    const suitPattern = sidePattern[suit];
+    const topCard = suitPattern[suitPattern.length - 1];
 
     if (!topCard) {
         return card.slice(1) === 'A';
     }
 
-    const topCardNum = cardNum.indexOf(getCardNumber(topCard));
-    const currentCardNum = cardNum.indexOf(getCardNumber(card));
+    const topCardNum = cardNum.indexOf(topCard);
+    const currentCardNum = cardNum.indexOf(card);
 
     return topCardNum + 1 === currentCardNum;
 } // 오른쪽으로 옮겨도 유효한지 판단하는 함수
 
-function getCardNumber(card) {    
-    const numberPart = card.slice(1);
-    if (numberPart === '10') {
-        return '10';
-    } else {
-        return numberPart;
-    }
-} // 카드 문자열에서 숫자 부분을 추출
+function leftSideToGameBoard() {
+    const $leftDeckArea = document.querySelector('.left-card-area');
+    const $gameBoardArea = document.querySelector('.game-board');
+    const movableCardClasses = ['side-forward-card-1', 'side-forward-card-2', 'side-forward-card-3'];
+    
+    const $movableCards = Array.from($leftDeckArea.children).filter(card => {
+        const cardClass = card.getAttribute('class');
+        return movableCardClasses.some(className => cardClass.includes(className));
+    });
 
+    $movableCards.forEach(card => {
+        const cardClone = card.cloneNode(true);
+        $gameBoardArea.appendChild(cardClone);
+
+        const cardIndex = $movableCards.indexOf(card);
+        const movedCard = leftDeck[cardIndex];
+        movedLeftDeck.push(movedCard);
+
+        $leftDeckArea.removeChild(card);
+    });
+}
 
 function moveAnswer(card) {
-    if (!isCardValid(card)) return;
     const suit = card[0];
-    sidePattern[suit].push(card);
-}
- // 오른쪽 사이드 부분에 카드 옮기는 함수
- 
-let hintFound = false;
+    const cardNumber = card.slice(1);
 
-function findHint() {
+    const cardIndex = cardNum.indexOf(cardNumber);
+    const prevIndex = cardIndex - 1;
 
-    findGameBoardHint();
-    findLeftDeckHint();
-    moveLeftDeckHint();
-    moveGameBoardHint();
+    if (prevIndex >= 0) {
+        const prevCardNum = cardNum[prevIndex];
+        const prevCard = suit + prevCardNum;
 
-    if (!hintFound) console.log('힌트: 현재 위치에서 더 이상 옮길 수 있는 카드가 없음');
-}
+        if (sidePattern[suit].includes(prevCard)) {
+            const cardIndexInSidePattern = sidePattern[suit].indexOf(prevCard);
+            sidePattern[suit].splice(cardIndexInSidePattern, 1);
+            card = prevCard;
 
-function findGameBoardHint(){
-    for (let i = 0; i < 7; i++) {
-        const currentCard = area['area' + i][area['area' + i].length - 1];
-        if (isCardValid(currentCard)) {
-            for (let j = 0; j < 7; j++) {
-                if (i !== j) {
-                    const cardJ = area['area' + j][area['area' + j].length - 1];
-                    if (checkCard(currentCard, cardJ)) {
-                        console.log('힌트: 게임 보드 내에서 카드를 옮길 수 있음');
-                        hintFound = true;
-                        return;
-                    }
-                }
-            }
+            if (isGeneralBoard(areaName)) updateImageElement(suit);
         }
     }
-}
+} // 오른쪽 사이드 부분에 카드 옮기는 함수
 
-function findLeftDeckHint(){
-    for (let i = 0; i < openLeftDeck.length; i += 3) {
-        const currentCard = openLeftDeck[i];
-
-        for (let j = 0; j < openLeftDeck.length; j++) {
-            if (i !== j) {
-                const cardJ = openLeftDeck[j];
-                if (checkCard(currentCard, cardJ)) {
-                    console.log('힌트: 오픈된 덱에서 게임 보드로 카드를 옮길 수 있음');
-                    hintFound = true;
-                    return;
-                }
-            }
+function checkHint() {
+    const deck = makeMovableDeck();
+    const hint = [];
+    for (let card of deck) {
+        if (isSideValid(card)) {
+            hint.push([card]);
         }
     }
-}
-
-function moveLeftDeckHint() {
-    for (let i = 0; i < openLeftDeck.length; i += 3) {
-        const currentCard = openLeftDeck[i];
-
-        for (let j = i + 3; j < openLeftDeck.length; j += 3) {
-            const cardJ = openLeftDeck[j];
-            if (isSideValid(currentCard, cardJ)) {
-                console.log('힌트: 오픈된 덱에서 정답 칸으로 카드를 옮길 수 있음');
-                hintFound = true;
-                return;
-            }
+    for (let startCard of deck) {
+        for (let endCard of deck) {
+            if (startCard === endCard) continue;
+            if (checkCard(startCard, endCard)) hint.push([startCard, endCard]);
         }
     }
-}
-
-function moveGameBoardHint() {
-    const pattern = ['S', 'H', 'D', 'C'];
-
-    for (let i = 0; i < 7; i++) {
-        const currentCard = area['area' + i][area['area' + i].length - 1];
-        if (isCardValid(currentCard)) {
-            for (let j = 0; j < 4; j++) {
-                const suit = pattern[j];
-                const cardJ = sidePattern[suit][sidePattern[suit].length - 1];
-                if (isSideValid(currentCard, cardJ)) {
-                    console.log('힌트: 게임 보드에서 오른쪽 사이드로 카드를 옮길 수 있음');
-                    hintFound = true;
-                    return;
-                }
-            }
-        }
-    }
+    console.log('힌트 배열:', hint);
 }
 
 
+function makeMovableDeck() {
+    const deck = [];
+    deck.push(area.area0[area.area0.length-1])
+    deck.push(area.area1[area.area1.length-1])
+    deck.push(area.area2[area.area2.length-1])
+    deck.push(area.area3[area.area3.length-1])
+    deck.push(area.area4[area.area4.length-1])
+    deck.push(area.area5[area.area5.length-1])
+    deck.push(area.area6[area.area6.length-1])
+    console.log(deck)
+    return deck;
+}
 
-// 카드에 관한 힌트 서치 필요함
-// 왼쪽 사이드 카드에 대한 경우도 필요함
-// 카드[j] 필요없음 뒷면 전체도 확인 필요없음
-// 카드 하나 선택해서 에리어 돌면서 확인해야함
-// 규칙 다시 살펴보기
 
-const hintButton = document.querySelector('.hint-btn');
-hintButton.addEventListener('click', findHint);
 
 function shuffleAllDeck() {
     for (let i = 0; i < deck.length; i++) {
@@ -278,7 +235,6 @@ function shuffleAllDeck() {
 function shareRandomDeck() {
     shuffleAllDeck();
 
-    area = {};
     let startIdx = 0;
 
     for (let i = 0; i < 7; i++) {
@@ -312,9 +268,17 @@ function getBackLeftCard(){
 
 function clearLeftDeckArea() {
     const $leftDeckArea = document.querySelector('.left-card-area');
-    const $cards = $leftDeckArea.getElementsByClassName('side-forward-card');
-    while ($cards.length > 0) {
-        $leftDeckArea.removeChild($cards[0]);
+    const $cards = $leftDeckArea.querySelectorAll('[class^="side-forward-card"]');
+
+    const temp = [];
+
+    for (let i = 0; i < $cards.length; i++) {
+        $leftDeckArea.removeChild($cards[i]);
+        temp.push(i);
+    }
+
+    for (let i = temp.length - 1; i >= 0; i--) {
+        openLeftDeck.splice(temp[i], 1);
     }
 } // 레프트덱 초기화
 
@@ -323,6 +287,12 @@ function drawThreeCards() {
         if (leftDeck.length > 0) {
             const card = leftDeck.shift();
             openLeftDeck.push(card);
+
+            const existingElement = $leftDeckArea.querySelector(`.side-forward-card-${i + 1}`);
+            if (existingElement) {
+                existingElement.remove();
+            }
+
             const $forwardCard = document.createElement('div');
             $forwardCard.className = `side-forward-card-${i + 1}`;
             const $img = document.createElement('img');
@@ -332,6 +302,166 @@ function drawThreeCards() {
         }
     }
 } // 카드 뽑기
+
+
+function dragStart(e) {
+    const classList = e.currentTarget.classList;
+    const index = classList[0].slice(13);
+    const area = classList[1];
+    e.dataTransfer.setData('index', index);
+    e.dataTransfer.setData('area', area);
+    e.dataTransfer.setData('class', classList[0]);
+}
+
+function dragOver(e) {
+    e.preventDefault();
+}
+
+function drop(e) {
+    e.preventDefault();
+
+    const index = e.dataTransfer.getData('index');
+    const areaName = e.dataTransfer.getData('area');
+    const className = e.dataTransfer.getData('class');
+
+    const droppedImage = e.target;
+    const startCard = area[areaName][index];
+    
+    const cardImgSrc = droppedImage.getAttribute('src');
+    const endCard = cardImgSrc.split('.')[0].slice(4);
+
+    if (isSideCard(className)) {
+        // 사이드 카드로 드롭한 경우의 로직
+        if (isSideValid(endCard)) {
+            // 유효한 드롭이면 처리
+            handleSideRightDrop(endCard, areaName);
+        } else {
+            // 유효하지 않은 드롭일 경우 처리
+            console.log("사이드 카드로 유효하지 않은 드롭이 발생했습니다.");
+        }
+    } else if (isGeneralBoard(areaName)) {
+        // 일반 영역에 드래그 했을 경우의 로직
+        handleGeneralBoardDrop(endCard, areaName, index);
+        updateCardElement(endCard, areaName);
+    } else {
+        // 일반 영역이 아닌 경우 처리
+        if (className.includes('side-left')) {
+            leftSideToGameBoard(); // 왼쪽 덱에서 게임 보드로 이동
+            return;
+        }    
+        if (startCard === endCard) return;
+    }
+}
+
+
+function updateCardElement(card, areaName) {
+    const areaElement = document.querySelector(`.card-area_${areaName}`);
+    if (areaElement) {
+        console.log(`Updating card in area: ${areaName}`);
+        areaElement.classList.remove(`area${card[1]}`);
+        const cardNumber = area[areaName].length - 1;
+        areaElement.classList.remove(`forward-card-${cardNumber}`);
+        
+        const existingForwardCard = areaElement.querySelector(`.forward-card-${cardNumber}`);
+        if (existingForwardCard) {
+            console.log(`Removing existing forward card in area: ${areaName}`);
+            areaElement.removeChild(existingForwardCard);
+        }
+
+        const forwardCard = document.createElement("div");
+        forwardCard.className = `forward-card-${cardNumber} area${areaName}`;
+        forwardCard.innerHTML = `<img src="img/${card}.svg">`;
+        forwardCard.addEventListener('dragstart', dragStart);
+        forwardCard.addEventListener('dragover', dragOver);
+        forwardCard.addEventListener('drop', drop);
+
+        areaElement.appendChild(forwardCard);
+        console.log(`Added new forward card in area: ${areaName}`);
+    }
+}
+
+
+
+function isSideCard(className) {
+    const regex = /(heart|diamond|clover|spade)-card/;
+    return regex.test(className);
+}
+
+
+function handleGeneralBoardDrop(endCard, areaName, index) {
+    const startCard = area[areaName][index];
+
+    if (isSideLeft(areaName)) {
+        console.log("게임 조건에 어긋나서 이동이 불가능합니다.");
+        return;
+    }
+
+    const isValidMove = checkCard(endCard, startCard);
+
+    if (isValidMove) {
+        console.log(`Handling general board drop: ${startCard} to ${endCard} in area: ${areaName}`);
+        area[areaName].push(endCard);
+        updateCardElement(endCard, areaName);
+        moveAnswer(endCard);
+    } else {
+        console.log(`Invalid move: ${startCard} to ${endCard} in area: ${areaName}`);
+    }
+}
+
+
+function handleSideRightDrop(endCard, areaName) {
+    const areaNumber = extractAreaNumber(areaName);
+    if (areaNumber === -1 || !isGeneralBoard(areaName)) {
+        console.log("사이드 카드로 유효하지 않은 드롭이 발생했습니다.");
+        return;
+    }
+
+    if (isSideValid(endCard)) {
+        const suit = endCard[0];
+        sidePattern[suit].push(endCard);
+        updateImageElement(suit);
+
+        const lastCardIndex = area[areaNumber].length - 1;
+        const isValidMove = checkCard(endCard, area[areaNumber][lastCardIndex]);
+
+        if (isValidMove) {
+            area[areaNumber].push(endCard);
+            updateCardElement(endCard, areaName);
+            moveAnswer(endCard);
+            console.log("카드 이동에 성공!");
+        } else {
+            console.log("카드 이동 실패: 맞지 않는 로직");
+        }
+    } else {
+        console.log("사이드 카드로 유효하지 않은 드롭이 발생했습니다.");
+    }
+}
+
+
+
+function isGeneralBoard(areaName) {
+    const areaNumber = extractAreaNumber(areaName);
+    return areaNumber >= 0 && areaNumber <= 6;
+}
+
+function extractAreaNumber(areaName) {
+    const areaNumberMatch = areaName.match(/area(\d+)/);
+    if (areaNumberMatch) {
+        return parseInt(areaNumberMatch[1]);
+    }
+    return;
+}
+
+
+
+// if (){
+//     // 사이드에 옮겼을 때 로직
+// }// 일반에 드래그 했는지 사이드에 했는지부터 체크
+// else {
+//     // 사이드가 아닌 곳에 옮김
+//     // 만약에 스타트카드랑 엔드가 똑같다면 리턴해야함
+//     // 에리어에 있는 카드를 왼쪽 사이드 오픈된 카드에 옮겼을 때 리턴
+//     // 그 다음에 체크카드 로직 들어가야함
 
 /* 
 <div class="side-left">
@@ -344,8 +474,8 @@ function drawThreeCards() {
     </div>
 </div>
 */
-const $leftDeckArea = document.querySelector('.left-card-area');
 
+const $leftDeckArea = document.querySelector('.left-card-area');
 
 function createLeftDeckArea() {
     // 섞기 버튼
@@ -360,7 +490,7 @@ function createLeftDeckArea() {
     $sideBackCard.className = 'side-backward-card';
     const $sideBackImg = document.createElement('img');
     $sideBackImg.src = imgFind('backward_orange');
-
+    
     $sideBackCard.addEventListener('click', () => {
             if (leftDeck.length > 2) {
                 drawThreeCards();
@@ -368,7 +498,8 @@ function createLeftDeckArea() {
                 $sideBackCard.style.visibility = 'hidden';
                 $emptyCard.style.visibility = 'visible';
             }
-            console.log('openLeftDeck:', openLeftDeck);
+            
+            // console.log('openLeftDeck:', openLeftDeck);
     });
 
     $emptyCard.addEventListener('click', () => {
@@ -386,42 +517,35 @@ function createLeftDeckArea() {
     $leftDeckArea.appendChild($sideBackCard);
 }
 
+const $sidePatternArea = document.querySelector('.side-right');
 
+function createSidePatternArea() {
+    const suits = ['heart', 'diamond', 'clover', 'spade'];
 
-// 뽑을 카드 배열이 있어야함 뽑은 카드 배열에서 끝에서 3장이 화면에 보여야 함
-// 카드를 새로 뽑거나 맨 끝에 있는 카드를 사용할 때마다 3장을 갱신해야함 3장만 쌓여있을 때 하나 쓰면 2개, 두개 쓰면 1개만 보이게
-// 레프트 덱을 클릭했을 때, 뽑은 카드 배열에 3개 카드를 추가함(이 기능 담은 함수 필요함)
-// 배열에 추가하는 함수, 마지막 3개 카드를 보이게 업데이트 하는 함수 (덱을 눌렀을때 이 두개 한번에 호출해야함)
-// 뽑힌 카드(보이는 3개 카드) 중에서 1장 썼을 때, 배열에 남은 카드들 기준으로 화면 업데이트 해야함(마지막 3개카드 함수 사용)
+    suits.forEach(suit => {
+        const defaultImage = setDefaultImage(suit);
+        updateImageElement(suit, defaultImage);
 
-function dragStart(e) {
-    const classList = e.currentTarget.classList;
-    const index = classList[0].slice(13);
-    const area = classList[1];
-    e.dataTransfer.setData('index', index);
-    e.dataTransfer.setData('area', area);
+        const $imageElement = document.querySelector(`.${suit}-card img`);
+        $imageElement.addEventListener('dragover', dragOver);
+        $imageElement.addEventListener('drop', drop);
+    });
 }
 
-function dragOver(e) {
-    e.preventDefault();
+function updateImageElement(suit, imageSrc) {
+    const $imageElement = document.querySelector(`.${suit}-card img`);
+    $imageElement.src = imageSrc;
 }
 
-function drop(e) {
-    e.preventDefault();
-
-    const index = e.dataTransfer.getData('index');
-    const areaName = e.dataTransfer.getData('area');
-
-    const droppedImage = e.target;
-    
-    const srcAttribute = droppedImage.getAttribute('src');
-    const cardElementName = srcAttribute.split('/').pop().split('.')[0];
-    //<img src="img/S10.svg">
-    
-    console.log('Dropped at endpoint:', cardElementName);
-    console.log('Dragged card index:', index);
-    console.log('Drag start:', area[areaName][index]);
+function setDefaultImage(suit) {
+    return `img/empty_card_${suit}.svg`;
 }
+
+function createSideBtnArea(){
+    const $hintBtn = document.querySelector('.fa-lightbulb')
+    $hintBtn.addEventListener('click', checkHint)
+}
+
 
 
 function createBoardArea() {
@@ -453,11 +577,15 @@ function createBoardArea() {
         }
     }
     
-} // 게임판 만드는 함수
+}
+
+ // 게임판 만드는 함수
 
 function render() {
     shareRandomDeck();
     createLeftDeckArea();
+    createSidePatternArea();
+    createSideBtnArea();
     createBoardArea();
 }
 
@@ -477,7 +605,15 @@ render();
 // 에리어 0~6까지 모두 확인해서 이동할 수 있으면 힌트 배열에 추가
 
 // 되돌리기 알고리즘:
-// 카드를 이동하기 전에 솔리테어 게임판의 배열들을 객체로 저장한다
-// 임의로 카드를 옮긴 상태의 배열들을 업데이트객체(가제)로 저장한다
-// 되돌리기 버튼을 누르면 카드를 이동하기 전 상태의 객체를 불러온다
-// 업데이트 객체를 초기화 한다(빈객체)
+// 빈 스택을 하나 생성한다
+// 객체 하나 만들어서 그 안에 현재 게임판의 정보를 담는다. 스택에 푸쉬해둔다
+// 되돌리기 버튼 누르면 뒤에 요소 pop하고 객체 안에 담겨있는 요소들 업데이트 해준다
+
+// 왼쪽 덱 드래그 구현하기
+// 왼쪽 덱 엘리먼트 3개만 보여주기 리셋하고 3개만 보이기
+// 섞기 버튼 나오면 아래 오픈레프트덱 엘리먼트를 없애기 이너html = ''
+// 드래그 할 때 옮겨지는지 안 옮겨지는지 체크하고 붙이는거 구현하기
+// 오른쪽 영역에 옮겼을때 옮겨지는지 확인하고 맞으면 붙이기
+
+// 변수 선언한거(배열, 객체) 구조 만들어오기 따로 파일 빼서 (모듈화)
+// 고칠거 고쳐오기
