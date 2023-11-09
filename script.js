@@ -137,13 +137,9 @@ function isSideValid(card) {
 function movableLeftDeck(cardIndex) {
     const leftDeckArea = document.querySelector('.left-card-area');
     const gameBoardArea = document.querySelector('.game-board');
-    const movableCardClasses = ['side-forward-card-1'];
+    const movableCardClass = 'side-forward-card-1';
 
-    const cards = Array.from(leftDeckArea.children).filter(card => {
-        return movableCardClasses.some(className => card.classList.contains(className));
-    });
-
-    const card = cards[cardIndex];
+    const card = leftDeckArea.querySelector(`.${movableCardClass}`);
     
     if (card) {
         const cardClone = card.cloneNode(true);
@@ -156,22 +152,15 @@ function movableLeftDeck(cardIndex) {
     }
 }
 
-
-function isMovable(element) {
-    const result = element.parentElement.classList.contains('side-forward-card-1');
-    console.log('isMovable 반환 값:', result);
-    return result;
-}
-
-
-
-
 function dragStart(e) {
+    const draggedCard = e.target;
     const classList = e.currentTarget.classList;
     const index = classList[0].slice(13);
     const area = classList[1];
     e.dataTransfer.setData('index', index);
     e.dataTransfer.setData('area', area);
+    e.dataTransfer.setData('sideCard', draggedCard);
+    console.log('test :', draggedCard)
 }
 
 
@@ -185,6 +174,9 @@ function drop(e) {
     const index = e.dataTransfer.getData('index');
     const areaName = e.dataTransfer.getData('area');
     const droppedImage = e.target;
+    const draggedCard = e.dataTransfer.getData('sideCard');
+
+    // console.log('test :', draggedCard)
 
     const cardImgSrc = droppedImage.getAttribute('src');
     const endCard = cardImgSrc.split('.')[0].slice(4);
@@ -195,13 +187,11 @@ function drop(e) {
         console.log('Drag end:', endCard);
     }
 
-    const movable = isMovable(droppedImage);
-    console.log('isMovable 함수 반환 값:', movable); // 반환 값을 확인
-    if (movable) {
-        movableLeftDeck(); // 이동 가능하면 함수 호출
-    }
-
+    // if (draggedCard.parentElement.classList.contains('side-forward-card-1')) {
+    //     movableLeftDeck();
+    // }    
 }
+
 
 function shuffleAllDeck() {
     for (let i = 0; i < deck.length; i++) {
