@@ -136,31 +136,23 @@ function isSideValid(card) {
 
 function movableLeftDeck(cardIndex) {
     const leftDeckArea = document.querySelector('.left-card-area');
-    const gameBoardArea = document.querySelector('.game-board');
-    const movableCardClass = 'side-forward-card-1';
-
-    const card = leftDeckArea.querySelector(`.${movableCardClass}`);
+    const card = leftDeckArea.querySelector('.side-forward-card-1');
+    console.log('test1 :', cardIndex)
     
     if (card) {
-        const cardClone = card.cloneNode(true);
-        gameBoardArea.appendChild(cardClone);
-        const movedCard = leftDeck[cardIndex];
+        const movedCard = openLeftDeck[cardIndex];
         movedLeftDeck.push(movedCard);
-        console.log(`이동 가능한 카드가 ${gameBoardArea.children.length - 1}번째 에리어로 이동했습니다.`);
-        leftDeckArea.removeChild(card);
-        console.log('이동 가능한 카드가 게임 보드로 이동했습니다.');
+        console.log(`이동 가능한 카드가 ${cardIndex}로 이동했습니다.`);
     }
 }
 
+
 function dragStart(e) {
-    const draggedCard = e.target;
     const classList = e.currentTarget.classList;
     const index = classList[0].slice(13);
     const area = classList[1];
     e.dataTransfer.setData('index', index);
     e.dataTransfer.setData('area', area);
-    e.dataTransfer.setData('sideCard', draggedCard);
-    console.log('test :', draggedCard)
 }
 
 
@@ -174,22 +166,20 @@ function drop(e) {
     const index = e.dataTransfer.getData('index');
     const areaName = e.dataTransfer.getData('area');
     const droppedImage = e.target;
-    const draggedCard = e.dataTransfer.getData('sideCard');
-
-    // console.log('test :', draggedCard)
 
     const cardImgSrc = droppedImage.getAttribute('src');
     const endCard = cardImgSrc.split('.')[0].slice(4);
+    const droppedArea = Array.from(droppedImage.parentElement.classList)[1];
 
     if (areaName.startsWith('area')) {
         console.log('Dragged card index:', index);
+        console.log('Dropped card area:', droppedArea);
         console.log('Drag start:', area[areaName][index]);
         console.log('Drag end:', endCard);
     }
-
-    // if (draggedCard.parentElement.classList.contains('side-forward-card-1')) {
-    //     movableLeftDeck();
-    // }    
+    else{
+        movableLeftDeck(droppedArea);
+    }
 }
 
 
@@ -272,6 +262,8 @@ function drawThreeCards() {
 } // 카드 뽑기
 
 
+
+
 function imgFind(image) {
     return `img/${image}.svg`;
 } // 이미지 경로 찾는 함수
@@ -300,6 +292,13 @@ function createLeftDeckArea() {
                 $emptyCard.style.visibility = 'visible';
             }
             
+            const $sideFirstCard = document.querySelector('.side-forward-card-1');
+            if ($sideFirstCard) {
+                $sideFirstCard.addEventListener('dragstart', dragStart);
+                $sideFirstCard.addEventListener('dragover', dragOver);
+                $sideFirstCard.addEventListener('drop', drop);
+            }        
+
             // console.log('openLeftDeck:', openLeftDeck);
     });
 
@@ -312,13 +311,6 @@ function createLeftDeckArea() {
             $sideBackCard.style.visibility = 'visible';
         }
     });
-
-    const $sideFirstCard = document.querySelector('.side-forward-card-1');
-    if ($sideFirstCard) {
-        $sideFirstCard.addEventListener('dragstart', dragStart);
-        $sideFirstCard.addEventListener('dragover', dragOver);
-        $sideFirstCard.addEventListener('drop', drop);
-    }
 
     $sideBackCard.appendChild($sideBackImg);
     $leftDeckArea.appendChild($emptyCard);
