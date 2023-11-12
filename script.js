@@ -160,8 +160,11 @@ function dragOver(e) {
     e.preventDefault();
 }
 
+console.log('test1 :',area)
+
 function drop(e) {
     e.preventDefault();
+    console.log('test2 :', area);
 
     const index = e.dataTransfer.getData('index');
     const areaName = e.dataTransfer.getData('area');
@@ -172,16 +175,43 @@ function drop(e) {
     const droppedArea = Array.from(droppedImage.parentElement.classList)[1];
 
     if (areaName.startsWith('area')) {
-        console.log('Dragged card index:', index);
-        console.log('Dropped card area:', droppedArea);
-        console.log('Drag start:', area[areaName][index]);
-        console.log('Drag end:', endCard);
-    }
-    else{
+        // 드래그한 카드와 드롭한 카드의 조건 확인
+        if (checkCard(area[areaName][index], endCard)) {
+            // 새로운 위치로 이동할 때 기존 위치에서 삭제
+            area[areaName].splice(index, 1);
+
+            // 드롭한 위치에 추가 (마지막 요소로)
+            area[droppedArea].push(endCard);
+
+            // 부모 요소의 클래스 패턴 확인 및 수정
+            const parentClassName = Array.from(droppedImage.parentElement.classList)[0];
+            const match = parentClassName.match(/forward-card-(\d+)/);
+
+            if (match) {
+                // 드롭한 위치에 있는 마지막 요소의 클래스 업데이트 방지
+                const cardsInDroppedArea = area[droppedArea];
+                const isLastCard = index === cardsInDroppedArea.length - 1;
+
+                if (!isLastCard) {
+                    const currentNumber = parseInt(match[1]);
+                    const newNumber = currentNumber + 1;
+
+                    // 업데이트 대상이 되는 엘리먼트 찾기
+                    const targetElement = document.querySelector(`.forward-card-${currentNumber}.area${droppedArea.slice(4)}`);
+
+                    if (targetElement) {
+                        // 클래스 업데이트
+                        targetElement.classList.replace(`forward-card-${currentNumber}`, `forward-card-${newNumber}`);
+                    }
+                }
+            }
+        } else {
+            console.log('카드 이동이 불가능합니다.');
+        }
+    } else {
         movableLeftDeck(droppedArea);
     }
 }
-
 
 function shuffleAllDeck() {
     for (let i = 0; i < deck.length; i++) {
