@@ -180,8 +180,9 @@ function drop(e) {
             // 새로운 위치로 이동할 때 기존 위치에서 삭제
             area[areaName].splice(index, 1);
 
-            // 드롭한 위치에 추가 (마지막 요소로)
-            area[droppedArea].push(endCard);
+            // 중복된 카드를 방지하고, 마지막 요소로 추가
+            area[droppedArea].push(area[areaName][areaName.length - 1]);
+            console.log(area[areaName][areaName.length - 1])
 
             // 부모 요소의 클래스 패턴 확인 및 수정
             const parentClassName = Array.from(droppedImage.parentElement.classList)[0];
@@ -212,6 +213,8 @@ function drop(e) {
         movableLeftDeck(droppedArea);
     }
 }
+
+
 
 function shuffleAllDeck() {
     for (let i = 0; i < deck.length; i++) {
