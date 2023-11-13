@@ -172,7 +172,7 @@ function drop(e) {
 
     const cardImgSrc = droppedImage.getAttribute('src');
     const endCard = cardImgSrc.split('.')[0].slice(4);
-    const droppedArea = Array.from(droppedImage.parentElement.classList).find(className => className.startsWith('area'));
+    const droppedArea = Array.from(droppedImage.parentElement.classList)[1];
 
     if (areaName.startsWith('area')) {
         // 드래그한 카드와 드롭한 카드의 조건 확인
@@ -213,16 +213,15 @@ function drop(e) {
                 
                     // 백워드 카드의 이미지 업데이트
                     const backwardCardImage = document.querySelector(`.backward-card-${backwardCardNumber}.area${areaName} img`);
-                    console.log('backwardCardImage:', backwardCardImage);
-                    
                     if (backwardCardImage) {
-                        console.log('Image found. Updating...');
-                        backwardCardImage.src = imgFind(area[areaName]);
-                        console.log('Image updated successfully.');
-                    } else {
-                        console.log('Unable to find the backward card image element.');
+                        backwardCardImage.src = imgFind(area[areaName][area[areaName].length - 1]);
+                
+                        // 클래스 업데이트
+                        const backwardCardElement = document.querySelector(`.backward-card-${backwardCardNumber}.area${areaName}`);
+                        if (backwardCardElement) {
+                            backwardCardElement.classList.replace(`backward-card-${backwardCardNumber}`, `forward-card-${backwardCardNumber}`);
+                        }
                     }
-                    
                 }
                 
             }
