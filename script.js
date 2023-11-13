@@ -83,7 +83,6 @@ let leftDeck = [
 ];
 
 let openLeftDeck = [];
-let movedLeftDeck = [];
 
 let sidePattern = {
     S: '',
@@ -134,17 +133,25 @@ function isSideValid(card) {
 
 // console.log(isSideValid('DA'))
 
-function movableLeftDeck(cardIndex) {
+function movableLeftDeck(cardIndex, endCard) {
     const leftDeckArea = document.querySelector('.left-card-area');
-    const card = leftDeckArea.querySelector('.side-forward-card-1');
-    console.log('test1 :', cardIndex)
-    
+    const card = leftDeckArea.querySelector(`.side-forward-card-${cardIndex}`);
+    // console.log('test1 :', cardIndex);
+    // console.log('test2 :', endCard)
+    // console.log('test3 :', openLeftDeck)
+    console.log()
+
     if (card) {
-        const movedCard = openLeftDeck[cardIndex];
-        movedLeftDeck.push(movedCard);
-        console.log(`이동 가능한 카드가 ${cardIndex}로 이동했습니다.`);
+        const movedCard = openLeftDeck.slice(0); // 클릭한거 타겟으로 잡기
+        if (checkCard(movedCard, endCard)) {
+            console.log(`이동 가능한 카드가 ${cardIndex}로 이동했습니다.`);
+        } else {
+            console.log('카드 이동이 불가능합니다.');
+        }
     }
 }
+
+
 
 
 function dragStart(e) {
@@ -229,7 +236,7 @@ function drop(e) {
             console.log('카드 이동이 불가능합니다.');
         }
     } else {
-        movableLeftDeck(droppedArea);
+        movableLeftDeck(droppedArea, endCard);
     }
 }
 
