@@ -172,39 +172,59 @@ function drop(e) {
 
     const cardImgSrc = droppedImage.getAttribute('src');
     const endCard = cardImgSrc.split('.')[0].slice(4);
-    const droppedArea = Array.from(droppedImage.parentElement.classList)[1];
+    const droppedArea = Array.from(droppedImage.parentElement.classList).find(className => className.startsWith('area'));
 
     if (areaName.startsWith('area')) {
         // 드래그한 카드와 드롭한 카드의 조건 확인
         if (checkCard(area[areaName][index], endCard)) {
-            // 새로운 위치로 이동할 때 기존 위치에서 삭제
-            area[areaName].splice(index, 1);
-
             // 중복된 카드를 방지하고, 마지막 요소로 추가
             const movedCard = area[areaName].pop();
             area[droppedArea].push(movedCard);
 
             // 부모 요소의 클래스 패턴 확인 및 수정
             const parentClassName = Array.from(droppedImage.parentElement.classList)[0];
-            const match = parentClassName.match(/forward-card-(\d+)/);
 
-            if (match) {
-                // 드롭한 위치에 있는 마지막 요소의 클래스 업데이트 방지
-                const cardsInDroppedArea = area[droppedArea];
-                const isLastCard = index === cardsInDroppedArea.length - 1;
+            if (parentClassName) {
+                if (parentClassName.startsWith('forward-card-')) {
+                    const dragStartCardNumber = parseInt(parentClassName.match(/forward-card-(\d+)/)[1]);
 
-                if (!isLastCard) {
-                    const currentNumber = parseInt(match[1]);
-                    const newNumber = currentNumber + 1;
+                    // 드롭한 위치에 있는 마지막 요소의 클래스 업데이트 방지
+                    const cardsInDroppedArea = area[droppedArea];
+                    const isLastCard = index === cardsInDroppedArea.length - 1;
 
-                    // 업데이트 대상이 되는 엘리먼트 찾기
-                    const targetElement = document.querySelector(`.forward-card-${currentNumber}.area${droppedArea.slice(4)}`);
+                    if (!isLastCard) {
+                        const newNumber = dragStartCardNumber + 1;
 
-                    if (targetElement) {
-                        // 클래스 업데이트
-                        targetElement.classList.replace(`forward-card-${currentNumber}`, `forward-card-${newNumber}`);
+                        // 새로운 엘리먼트 구조 생성
+                        const newElement = document.createElement('div');
+                        newElement.classList.add(`forward-card-${newNumber}`, `area${droppedArea.slice(4)}`);
+                        newElement.innerHTML = `<img src="${imgFind(movedCard)}">`;
+
+                        // 엘리먼트 추가
+                        droppedImage.parentElement.parentElement.appendChild(newElement);
+                        const areaElement = document.querySelectorAll(`.${areaName}`);
+                        const lastAreaElement = areaElement[areaElement.length - 1];
+                        if (lastAreaElement) {
+                            lastAreaElement.remove();
+                        }
                     }
+                } else if (parentClassName.startsWith('backward-card-')) {
+                    const backwardCardNumber = parseInt(parentClassName.match(/backward-card-(\d+)/)[1]);
+                
+                    // 백워드 카드의 이미지 업데이트
+                    const backwardCardImage = document.querySelector(`.backward-card-${backwardCardNumber}.area${areaName} img`);
+                    console.log('backwardCardImage:', backwardCardImage);
+                    
+                    if (backwardCardImage) {
+                        console.log('Image found. Updating...');
+                        backwardCardImage.src = imgFind(area[areaName]);
+                        console.log('Image updated successfully.');
+                    } else {
+                        console.log('Unable to find the backward card image element.');
+                    }
+                    
                 }
+                
             }
         } else {
             console.log('카드 이동이 불가능합니다.');
@@ -213,8 +233,6 @@ function drop(e) {
         movableLeftDeck(droppedArea);
     }
 }
-
-
 
 
 function shuffleAllDeck() {
