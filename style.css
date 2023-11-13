@@ -86,7 +86,7 @@ html, body{
     width: 800px;
     height: calc(100% - 70px);
     visibility: hidden;
-    z-index: 2;
+    z-index: 10;
     background: #4C594F;
 }
 
@@ -370,7 +370,6 @@ html, body{
     transition: opacity 0.3s;
 }
 
-
 .side-forward-card-3{
     width: 60px;
     top: 140px;
@@ -383,7 +382,7 @@ html, body{
 
 .side-forward-card-2{
     width: 60px;
-    top: 160px;
+    top: 158px;
     position: absolute;
     left: 50%;
     transform: translate(-50%);
@@ -394,7 +393,7 @@ html, body{
 .side-forward-card-1{
     width: 60px;
     position: absolute;
-    top: 180px;
+    top: 178px;
     left: 50%;
     transform: translate(-50%);
     box-shadow: 2px 2px 5px #333;
