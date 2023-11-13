@@ -181,8 +181,8 @@ function drop(e) {
             area[areaName].splice(index, 1);
 
             // 중복된 카드를 방지하고, 마지막 요소로 추가
-            area[droppedArea].push(area[areaName][areaName.length - 1]);
-            console.log(area[areaName][areaName.length - 1])
+            const movedCard = area[areaName].pop();
+            area[droppedArea].push(movedCard);
 
             // 부모 요소의 클래스 패턴 확인 및 수정
             const parentClassName = Array.from(droppedImage.parentElement.classList)[0];
@@ -213,6 +213,7 @@ function drop(e) {
         movableLeftDeck(droppedArea);
     }
 }
+
 
 
 
