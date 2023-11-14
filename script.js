@@ -133,12 +133,12 @@ function isSideValid(card) {
 
 // console.log(isSideValid('DA'))
 
-function movableLeftDeck(cardIndex, endCard) {
+function movableLeftDeck(cardIndex, endCard) { // 이름 바꾸기
     const leftDeckArea = document.querySelector('.left-card-area');
-    const card = leftDeckArea.querySelector(`.side-forward-card-${cardIndex}`);
-    // console.log('test1 :', cardIndex);
-    // console.log('test2 :', endCard)
-    // console.log('test3 :', openLeftDeck)
+    const card = leftDeckArea.querySelector(`.side-forward-card-1`);
+    console.log('test1 :', cardIndex);
+    console.log('test2 :', endCard)
+    console.log('test3 :', openLeftDeck)
     console.log()
 
     if (card) {
@@ -150,9 +150,6 @@ function movableLeftDeck(cardIndex, endCard) {
         }
     }
 }
-
-
-
 
 function dragStart(e) {
     const classList = e.currentTarget.classList;
@@ -169,6 +166,65 @@ function dragOver(e) {
 
 console.log('test1 :',area)
 
+function createForwardCardElement(cardNumber, droppedArea, movedCard) {
+    const newElement = document.createElement('div');
+    newElement.classList.add(`forward-card-${cardNumber}`, `area${droppedArea.slice(4)}`);
+    newElement.innerHTML = `<img src="${imgFind(movedCard)}">`;
+    return newElement;
+}
+
+function updateForwardCard(droppedArea, movedCard, droppedImage, index) {
+    const parentClassName = Array.from(droppedImage.parentElement.classList)[0];
+
+    if (!parentClassName || !parentClassName.startsWith('forward-card-')) {
+        return; // 아무 작업도 수행하지 않음
+    }
+
+    const dragStartCardNumber = parseInt(parentClassName.match(/forward-card-(\d+)/)?.[1]);
+
+    if (dragStartCardNumber === undefined) {
+        return; // 아무 작업도 수행하지 않음
+    }
+
+    const cardsInDroppedArea = area[droppedArea];
+    const isLastCard = index === cardsInDroppedArea.length - 1;
+
+    if (!isLastCard) {
+        const newNumber = dragStartCardNumber + 1;
+        const newElement = createForwardCardElement(newNumber, droppedArea, movedCard);
+
+        // 새로운 엘리먼트를 현재 드롭한 위치 뒤에 추가
+        const droppedElement = document.querySelector(`.forward-card-${dragStartCardNumber}.area${droppedArea.slice(4)}`);
+        if (droppedElement) {
+            droppedElement.parentElement.insertBefore(newElement, droppedElement.nextSibling);
+        }
+    }
+}
+
+
+
+function removeLastAreaElement(areaName) {
+    const areaElement = document.querySelectorAll(`.${areaName}`);
+    const lastAreaElement = areaElement[areaElement.length - 1];
+    if (lastAreaElement) {
+        lastAreaElement.remove();
+    }
+}
+
+function updateBackwardCard(droppedArea) {
+    const backwardCardNumber = parseInt(parentClassName.match(/backward-card-(\d+)/)?.[1]);
+    const backwardCardImage = document.querySelector(`.backward-card-${backwardCardNumber}.area${droppedArea} img`);
+
+    if (backwardCardImage) {
+        backwardCardImage.src = imgFind(area[droppedArea][area[droppedArea].length - 1]);
+
+        const backwardCardElement = document.querySelector(`.backward-card-${backwardCardNumber}.area${droppedArea}`);
+        if (backwardCardElement) {
+            backwardCardElement.classList.replace(`backward-card-${backwardCardNumber}`, `forward-card-${backwardCardNumber}`);
+        }
+    }
+}
+
 function drop(e) {
     e.preventDefault();
     console.log('test2 :', area);
@@ -176,65 +232,16 @@ function drop(e) {
     const index = e.dataTransfer.getData('index');
     const areaName = e.dataTransfer.getData('area');
     const droppedImage = e.target;
-
     const cardImgSrc = droppedImage.getAttribute('src');
     const endCard = cardImgSrc.split('.')[0].slice(4);
     const droppedArea = Array.from(droppedImage.parentElement.classList)[1];
 
-    if (areaName.startsWith('area')) {
-        // 드래그한 카드와 드롭한 카드의 조건 확인
-        if (checkCard(area[areaName][index], endCard)) {
-            // 중복된 카드를 방지하고, 마지막 요소로 추가
-            const movedCard = area[areaName].pop();
-            area[droppedArea].push(movedCard);
+    if (areaName.startsWith('area') && checkCard(area[areaName][index], endCard)) {
+        const movedCard = area[areaName].pop();
+        area[droppedArea].push(movedCard);
 
-            // 부모 요소의 클래스 패턴 확인 및 수정
-            const parentClassName = Array.from(droppedImage.parentElement.classList)[0];
-
-            if (parentClassName) {
-                if (parentClassName.startsWith('forward-card-')) {
-                    const dragStartCardNumber = parseInt(parentClassName.match(/forward-card-(\d+)/)[1]);
-
-                    // 드롭한 위치에 있는 마지막 요소의 클래스 업데이트 방지
-                    const cardsInDroppedArea = area[droppedArea];
-                    const isLastCard = index === cardsInDroppedArea.length - 1;
-
-                    if (!isLastCard) {
-                        const newNumber = dragStartCardNumber + 1;
-
-                        // 새로운 엘리먼트 구조 생성
-                        const newElement = document.createElement('div');
-                        newElement.classList.add(`forward-card-${newNumber}`, `area${droppedArea.slice(4)}`);
-                        newElement.innerHTML = `<img src="${imgFind(movedCard)}">`;
-
-                        // 엘리먼트 추가
-                        droppedImage.parentElement.parentElement.appendChild(newElement);
-                        const areaElement = document.querySelectorAll(`.${areaName}`);
-                        const lastAreaElement = areaElement[areaElement.length - 1];
-                        if (lastAreaElement) {
-                            lastAreaElement.remove();
-                        }
-                    }
-                } else if (parentClassName.startsWith('backward-card-')) {
-                    const backwardCardNumber = parseInt(parentClassName.match(/backward-card-(\d+)/)[1]);
-                
-                    // 백워드 카드의 이미지 업데이트
-                    const backwardCardImage = document.querySelector(`.backward-card-${backwardCardNumber}.area${areaName} img`);
-                    if (backwardCardImage) {
-                        backwardCardImage.src = imgFind(area[areaName][area[areaName].length - 1]);
-                
-                        // 클래스 업데이트
-                        const backwardCardElement = document.querySelector(`.backward-card-${backwardCardNumber}.area${areaName}`);
-                        if (backwardCardElement) {
-                            backwardCardElement.classList.replace(`backward-card-${backwardCardNumber}`, `forward-card-${backwardCardNumber}`);
-                        }
-                    }
-                }
-                
-            }
-        } else {
-            console.log('카드 이동이 불가능합니다.');
-        }
+        updateForwardCard(droppedArea, movedCard, droppedImage);
+        updateBackwardCard(droppedArea);
     } else {
         movableLeftDeck(droppedArea, endCard);
     }
