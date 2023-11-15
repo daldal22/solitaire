@@ -133,23 +133,7 @@ function isSideValid(card) {
 
 // console.log(isSideValid('DA'))
 
-function movableLeftDeck(cardIndex, endCard) { // 이름 바꾸기
-    const leftDeckArea = document.querySelector('.left-card-area');
-    const card = leftDeckArea.querySelector(`.side-forward-card-1`);
-    console.log('test1 :', cardIndex);
-    console.log('test2 :', endCard)
-    console.log('test3 :', openLeftDeck)
-    console.log()
 
-    if (card) {
-        const movedCard = openLeftDeck.slice(0); // 클릭한거 타겟으로 잡기
-        if (checkCard(movedCard, endCard)) {
-            console.log(`이동 가능한 카드가 ${cardIndex}로 이동했습니다.`);
-        } else {
-            console.log('카드 이동이 불가능합니다.');
-        }
-    }
-}
 
 function dragStart(e) {
     const classList = e.currentTarget.classList;
@@ -165,6 +149,17 @@ function dragOver(e) {
 }
 
 console.log('test1 :',area)
+
+function movableLeftDeck(cardIndex, endCard) { // 이름 바꾸기
+    const leftDeckArea = document.querySelector('.left-card-area');
+    const card = leftDeckArea.querySelector(`.side-forward-card-1`);
+    console.log(card)
+    if (checkCard(card, endCard)) {
+        console.log(`이동 가능한 카드가 ${cardIndex}로 이동했습니다.`);
+    } else {
+        console.log('카드 이동이 불가능합니다.');
+    }
+}
 
 function createForwardCardElement(cardNumber, droppedArea, movedCard) {
     const newElement = document.createElement('div');
