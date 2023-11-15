@@ -201,26 +201,27 @@ function updateForwardCard(droppedArea, movedCard, droppedImage, index) {
     }
 }
 
-
-
-function removeLastAreaElement(areaName) {
-    const areaElement = document.querySelectorAll(`.${areaName}`);
-    const lastAreaElement = areaElement[areaElement.length - 1];
-    if (lastAreaElement) {
-        lastAreaElement.remove();
+function removeOriginalElement(areaName) {
+    const areaElement = document.querySelector(`.${areaName}`);
+    console.log('removeElement: ',areaName)
+    if (areaElement.children.length > 1) {
+        areaElement.lastChild.remove();
     }
 }
 
-function updateBackwardCard(droppedArea) {
+function updateBackwardCard(parentClassName, droppedArea) {
     const backwardCardNumber = parseInt(parentClassName.match(/backward-card-(\d+)/)?.[1]);
-    const backwardCardImage = document.querySelector(`.backward-card-${backwardCardNumber}.area${droppedArea} img`);
 
-    if (backwardCardImage) {
-        backwardCardImage.src = imgFind(area[droppedArea][area[droppedArea].length - 1]);
+    if (backwardCardNumber !== undefined) {
+        const backwardCardImage = document.querySelector(`.backward-card-${backwardCardNumber}.area${droppedArea} img`);
 
-        const backwardCardElement = document.querySelector(`.backward-card-${backwardCardNumber}.area${droppedArea}`);
-        if (backwardCardElement) {
-            backwardCardElement.classList.replace(`backward-card-${backwardCardNumber}`, `forward-card-${backwardCardNumber}`);
+        if (backwardCardImage) {
+            backwardCardImage.src = imgFind(area[droppedArea][area[droppedArea].length - 1]);
+            const backwardCardElement = document.querySelector(`.backward-card-${backwardCardNumber}.area${droppedArea}`);
+            
+            if (backwardCardElement) {
+                backwardCardElement.classList.replace(`backward-card-${backwardCardNumber}`, `forward-card-${backwardCardNumber}`);
+            }
         }
     }
 }
@@ -241,6 +242,7 @@ function drop(e) {
         area[droppedArea].push(movedCard);
 
         updateForwardCard(droppedArea, movedCard, droppedImage);
+        removeOriginalElement(areaName);
         updateBackwardCard(droppedArea);
     } else {
         movableLeftDeck(droppedArea, endCard);
