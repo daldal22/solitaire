@@ -203,27 +203,21 @@ function updateForwardCard(droppedArea, movedCard, droppedImage, index) {
 
 function removeLastAreaElement(areaName) {
     const areaElement = document.querySelector(`.${areaName}:last-child`);
-    console.log(areaElement)
     areaElement.remove();
+} // 항상 마지막 요소만 지우게 되는 문제가 있는데 이걸 어떻게 고쳐야할지 아이디어가 안 떠오름
+
+
+function updateBackwardCard(areaName) {
+    const areaElement = document.querySelector(`.${areaName}:last-child`);
+    const backwardCardImage = areaElement.querySelector('img');
+    backwardCardImage.src = imgFind(area[areaName][area[areaName].length - 1]);
+
+    const classList = areaElement.classList;
+    const lastClass = classList[classList.length - 1];
+    const backwardCardNumber = lastClass.match(/\d+/)[0];
+    areaElement.classList.replace(`backward-card-${backwardCardNumber}`, `forward-card-${backwardCardNumber}`);
 }
 
-
-function updateBackwardCard(parentClassName, droppedArea) {
-    const backwardCardNumber = parseInt(parentClassName.match(/backward-card-(\d+)/)?.[1]);
-
-    if (backwardCardNumber !== undefined) {
-        const backwardCardImage = document.querySelector(`.backward-card-${backwardCardNumber}.area${droppedArea} img`);
-
-        if (backwardCardImage) {
-            backwardCardImage.src = imgFind(area[droppedArea][area[droppedArea].length - 1]);
-            const backwardCardElement = document.querySelector(`.backward-card-${backwardCardNumber}.area${droppedArea}`);
-            
-            if (backwardCardElement) {
-                backwardCardElement.classList.replace(`backward-card-${backwardCardNumber}`, `forward-card-${backwardCardNumber}`);
-            }
-        }
-    }
-}
 
 function drop(e) {
     e.preventDefault();
@@ -242,7 +236,7 @@ function drop(e) {
         const movedCard = area[areaName].pop();
         area[droppedArea].push(movedCard);
         updateForwardCard(droppedArea, movedCard, droppedImage);
-        updateBackwardCard(droppedArea);
+        updateBackwardCard(areaName);
 
     } else {
         movableLeftDeck(droppedArea, endCard);
