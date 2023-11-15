@@ -201,13 +201,16 @@ function updateForwardCard(droppedArea, movedCard, droppedImage, index) {
     }
 }
 
-function removeOriginalElement(areaName) {
+function removeLastAreaElement(areaName) {
     const areaElement = document.querySelector(`.${areaName}`);
-    console.log('removeElement: ',areaName)
-    if (areaElement.children.length > 1) {
-        areaElement.lastChild.remove();
+    const lastChild = areaElement.lastElementChild;
+    console.log('removeElement :', lastChild)
+
+    if (lastChild) {
+        lastChild.remove();
     }
 }
+
 
 function updateBackwardCard(parentClassName, droppedArea) {
     const backwardCardNumber = parseInt(parentClassName.match(/backward-card-(\d+)/)?.[1]);
@@ -242,7 +245,7 @@ function drop(e) {
         area[droppedArea].push(movedCard);
 
         updateForwardCard(droppedArea, movedCard, droppedImage);
-        removeOriginalElement(areaName);
+        removeLastAreaElement(areaName);
         updateBackwardCard(droppedArea);
     } else {
         movableLeftDeck(droppedArea, endCard);
