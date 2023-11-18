@@ -157,7 +157,8 @@ function movableLeftDeck(droppedArea, endCard) { // 이름 바꾸기
     const dragCard = cardImgSrc.split('.')[0].slice(4); 
     console.log(dragCard)
     if (checkCard(dragCard, endCard)) {
-        console.log(`이동 가능한 카드가 ${droppedArea}로 이동했습니다.`);
+        const movedCard = dragCard;
+        area[droppedArea].push(movedCard);
     } else {
         console.log(`카드 이동이 불가능합니다.`);
     }
