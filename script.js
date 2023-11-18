@@ -159,9 +159,14 @@ function movableLeftDeck(droppedArea, endCard) { // 이름 바꾸기
     if (checkCard(dragCard, endCard)) {
         const movedCard = dragCard;
         area[droppedArea].push(movedCard);
-    } else {
-        console.log(`카드 이동이 불가능합니다.`);
-    }
+    } else if(isSideValid(dragCard)){
+        const movedAnswer = dragCard;
+        
+    } else return;
+}
+
+function movableAnswerDeck(){
+
 }
 
 // function createForwardCardElement(cardNumber, droppedArea, movedCard) {
