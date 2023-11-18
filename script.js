@@ -150,69 +150,73 @@ function dragOver(e) {
 
 console.log('test1 :',area)
 
-function movableLeftDeck(cardIndex, endCard) { // 이름 바꾸기
+function movableLeftDeck(droppedArea, endCard) { // 이름 바꾸기
     const leftDeckArea = document.querySelector('.left-card-area');
-    const card = leftDeckArea.querySelector(`.side-forward-card-1`);
-    console.log(card)
-    if (checkCard(card, endCard)) {
-        console.log(`이동 가능한 카드가 ${cardIndex}로 이동했습니다.`);
+    const card = leftDeckArea.querySelector(`.side-forward-card-1 img`);
+    const cardImgSrc = card.getAttribute('src');
+    const dragCard = cardImgSrc.split('.')[0].slice(4); 
+    console.log(dragCard)
+    if (checkCard(dragCard, endCard)) {
+        console.log(`이동 가능한 카드가 ${droppedArea}로 이동했습니다.`);
     } else {
-        console.log('카드 이동이 불가능합니다.');
+        console.log(`카드 이동이 불가능합니다.`);
     }
 }
 
-function createForwardCardElement(cardNumber, droppedArea, movedCard) {
-    const newElement = document.createElement('div');
-    newElement.classList.add(`forward-card-${cardNumber}`, `area${droppedArea.slice(4)}`);
-    newElement.innerHTML = `<img src="${imgFind(movedCard)}">`;
-    return newElement;
-}
+// function createForwardCardElement(cardNumber, droppedArea, movedCard) {
+//     const newElement = document.createElement('div');
+//     newElement.classList.add(`forward-card-${cardNumber}`, `area${droppedArea.slice(4)}`);
+//     newElement.innerHTML = `<img src="${imgFind(movedCard)}">`;
+//     return newElement;
+// }
 
-function updateForwardCard(droppedArea, movedCard, droppedImage, index) {
-    const parentClassName = Array.from(droppedImage.parentElement.classList)[0];
+// function updateForwardCard(droppedArea, movedCard, droppedImage, index) {
+//     const parentClassName = Array.from(droppedImage.parentElement.classList)[0];
 
-    if (!parentClassName || !parentClassName.startsWith('forward-card-')) {
-        return; // 아무 작업도 수행하지 않음
-    }
+//     if (!parentClassName || !parentClassName.startsWith('forward-card-')) {
+//         return; // 아무 작업도 수행하지 않음
+//     }
 
-    const dragStartCardNumber = parseInt(parentClassName.match(/forward-card-(\d+)/)?.[1]);
+//     const dragStartCardNumber = parseInt(parentClassName.match(/forward-card-(\d+)/)?.[1]);
 
-    if (dragStartCardNumber === undefined) {
-        return; // 아무 작업도 수행하지 않음
-    }
+//     if (dragStartCardNumber === undefined) {
+//         return; // 아무 작업도 수행하지 않음
+//     }
 
-    const cardsInDroppedArea = area[droppedArea];
-    const isLastCard = index === cardsInDroppedArea.length - 1;
+//     const cardsInDroppedArea = area[droppedArea];
+//     const isLastCard = index === cardsInDroppedArea.length - 1;
 
-    if (!isLastCard) {
-        const newNumber = dragStartCardNumber + 1;
-        const newElement = createForwardCardElement(newNumber, droppedArea, movedCard);
+//     if (!isLastCard) {
+//         const newNumber = dragStartCardNumber + 1;
+//         const newElement = createForwardCardElement(newNumber, droppedArea, movedCard);
 
-        // 새로운 엘리먼트를 현재 드롭한 위치 뒤에 추가
-        const droppedElement = document.querySelector(`.forward-card-${dragStartCardNumber}.area${droppedArea.slice(4)}`);
-        if (droppedElement) {
-            droppedElement.parentElement.insertBefore(newElement, droppedElement.nextSibling);
-        }
-    }
-}
+//         // 새로운 엘리먼트를 현재 드롭한 위치 뒤에 추가
+//         const droppedElement = document.querySelector(`.forward-card-${dragStartCardNumber}.area${droppedArea.slice(4)}`);
+//         if (droppedElement) {
+//             droppedElement.parentElement.insertBefore(newElement, droppedElement.nextSibling);
+//         }
+//     }
+// }
 
-function removeLastAreaElement(areaName) {
-    const areaElement = document.querySelector(`.${areaName}:last-child`);
-    areaElement.remove();
-} // 항상 마지막 요소만 지우게 되는 문제가 있는데 이걸 어떻게 고쳐야할지 아이디어가 안 떠오름
+// function removeLastAreaElement(areaName) {
+//     const areaElement = document.querySelector(`.${areaName}:last-child`);
+//     areaElement.remove();
+// } // 항상 마지막 요소만 지우게 되는 문제가 있는데 이걸 어떻게 고쳐야할지 아이디어가 안 떠오름
+// // 에리어를 새로 랜더하는게 더 안전하다
+// // 객체가 새로 업데이트 되었으니까 이거 기준으로 랜더를 새로하기
 
 
-function updateBackwardCard(areaName) {
-    const areaElement = document.querySelector(`.${areaName}:last-child`);
-    const backwardCardImage = areaElement.querySelector('img');
-    backwardCardImage.src = imgFind(area[areaName][area[areaName].length - 1]);
+// function updateBackwardCard(areaName) {
+//     const areaElement = document.querySelector(`.${areaName}:last-child`);
+//     const backwardCardImage = areaElement.querySelector('img');
+//     backwardCardImage.src = imgFind(area[areaName][area[areaName].length - 1]);
 
-    const classList = areaElement.classList;
-    const lastClass = classList[classList.length - 1];
-    const backwardCardNumber = lastClass.match(/\d+/)[0];
-    areaElement.classList.replace(`backward-card-${backwardCardNumber}`, `forward-card-${backwardCardNumber}`);
-}
-
+//     const classList = areaElement.classList;
+//     const lastClass = classList[classList.length - 1];
+//     const backwardCardNumber = lastClass.match(/\d+/)[0];
+//     areaElement.classList.replace(`backward-card-${backwardCardNumber}`, `forward-card-${backwardCardNumber}`);
+// }
+// 엘리먼트의 클래스가 안 고쳐짐
 
 function drop(e) {
     e.preventDefault();
@@ -226,16 +230,15 @@ function drop(e) {
     const droppedArea = Array.from(droppedImage.parentElement.classList)[1];
 
     if (areaName.startsWith('area') && checkCard(area[areaName][index], endCard)) {
-        removeLastAreaElement(areaName);
-        
         const movedCard = area[areaName].pop();
         area[droppedArea].push(movedCard);
-        updateForwardCard(droppedArea, movedCard, droppedImage);
-        updateBackwardCard(areaName);
+        // updateForwardCard(droppedArea, movedCard, droppedImage);
+        // updateBackwardCard(areaName);
 
     } else {
         movableLeftDeck(droppedArea, endCard);
     }
+    render();
 }
 
 
@@ -388,9 +391,15 @@ function createBoardArea() {
                 imgPath = imgFind(cards[j]);
                 className = `forward-card-${j} area${i}`;
                 cardElement.addEventListener('dragstart', dragStart);
-            } else{
-                imgPath = 'img/backward_orange.svg';
-                className = `backward-card-${j} area${i}`;
+            }
+            else{
+                if (cards[j].startsWith('forward-card')) {
+                    imgPath = imgFind(cards[j]);
+                    className = `forward-card-${j} area${i}`;
+                } else {
+                    imgPath = 'img/backward_orange.svg';
+                    className = `backward-card-${j} area${i}`;
+                }
             }
             cardElement.innerHTML = `<img src="${imgPath}">`;
             cardElement.className = className;
@@ -399,17 +408,25 @@ function createBoardArea() {
             cardElement.addEventListener('drop', drop);
 
             cardArea.appendChild(cardElement);            
+            // if(cardElement.children.startsWith('forward')){
+            //     console.log('작동한다')
+            // }
         }
     }
-    
 }
 
  // 게임판 만드는 함수
 
 function render() {
-    shareRandomDeck();
     createLeftDeckArea();
     createBoardArea();
 }
 
+shareRandomDeck();
 render();
+
+// 에리어를 새로 랜더하는게 더 안전하다
+// 객체가 새로 업데이트 되었으니까 이거 기준으로 랜더를 새로하기
+// 새로 랜더하는 함수 만들기... 카드 옮길 때마다 랜더해야함
+// 크리에이트보드에리어를 계속 호출?? 업데이트할 때마다 랜더해야함
+// 크리에이트보드에리어 고치기 기존에 있던 forward-card-숫자는 유지해야함
