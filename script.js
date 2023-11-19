@@ -139,6 +139,10 @@ function dragStart(e) {
     const classList = e.currentTarget.classList;
     const index = classList[0].slice(13);
     const area = classList[1];
+    const card = e.target;
+    let cardImgSrc = card.getAttribute('src');
+    const dragStartCard = cardImgSrc.split('.')[0].slice(4);
+    e.dataTransfer.setData('text/plain', dragStartCard);
     e.dataTransfer.setData('index', index);
     e.dataTransfer.setData('area', area);
 }
@@ -154,7 +158,7 @@ function movableLeftDeck(droppedArea, endCard) { // 이름 바꾸기
     const leftDeckArea = document.querySelector('.left-card-area');
     const card = leftDeckArea.querySelector(`.side-forward-card-1 img`);
     const cardImgSrc = card.getAttribute('src');
-    const dragCard = cardImgSrc.split('.')[0].slice(4); 
+    const dragCard = cardImgSrc.split('.')[0].slice(4);
     console.log(dragCard)
     if (checkCard(dragCard, endCard)) {
         const movedCard = dragCard;
@@ -169,22 +173,29 @@ function movableLeftDeck(droppedArea, endCard) { // 이름 바꾸기
 
 function movableAnswerDeck(suit, cardNumber){
     const pattern = ['heart', 'diamond', 'clover', 'spade'];
-    if(suit.toLowerCase() === 'h'){
-        suit = 'heart';
-    }
-    if(suit.toLowerCase() === 'd'){
-        suit = 'diamond';
-    }
-    if(suit.toLowerCase() === 'c'){
-        suit = 'clover';
-    }
-    if(suit.toLowerCase() === 'spade'){
-        suit = 'spade';
-    }
-    const sideCardElement = document.querySelector(`.${suit.toLowerCase()}-card img`);
-    console.log(sideCardElement)
     console.log(suit)
-    const imagePath = imgFind(`${suit}${cardNumber}`);
+    switch (suit.toLowerCase()) {
+        case 'h':
+            suit = 'heart';
+            break;
+        case 'd':
+            suit = 'diamond';
+            break;
+        case 'c':
+            suit = 'clover';
+            break;
+        case 's':
+            suit = 'spade';
+            break;
+    }
+
+    if (!pattern.includes(suit)) {
+        console.log(`Invalid suit: ${suit}`);
+        return;
+    }
+
+    const sideCardElement = document.querySelector(`.${suit}-card img`);
+    const imagePath = imgFind(`${suit.toUpperCase()[0]}${cardNumber}`);
     if (sideCardElement) {
         sideCardElement.setAttribute('src', imagePath);
         console.log(`사이드 패턴 이미지 업데이트: ${imagePath}`);
@@ -195,7 +206,7 @@ function movableAnswerDeck(suit, cardNumber){
 
 function drop(e) {
     e.preventDefault();
-    console.log('test2 :', area);
+    console.log('test2:', area);
 
     const index = e.dataTransfer.getData('index');
     const areaName = e.dataTransfer.getData('area');
@@ -203,10 +214,18 @@ function drop(e) {
     const cardImgSrc = droppedImage.getAttribute('src');
     const endCard = cardImgSrc.split('.')[0].slice(4);
     const droppedArea = Array.from(droppedImage.parentElement.classList)[1];
+    
+    const dragStartCard = e.dataTransfer.getData('text/plain');
 
+    console.log(dragStartCard);
+    
     if (areaName.startsWith('area') && checkCard(area[areaName][index], endCard)) {
         const movedCard = area[areaName].pop();
         area[droppedArea].push(movedCard);
+    } else if (isSideValid(dragStartCard)) {
+        const suit = dragStartCard[0];
+        const cardNumber = dragStartCard.slice(1);
+        movableAnswerDeck(suit, cardNumber);
     } else {
         movableLeftDeck(droppedArea, endCard);
     }
