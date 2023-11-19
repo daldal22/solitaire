@@ -160,69 +160,38 @@ function movableLeftDeck(droppedArea, endCard) { // 이름 바꾸기
         const movedCard = dragCard;
         area[droppedArea].push(movedCard);
     } else if(isSideValid(dragCard)){
-        const movedAnswer = dragCard;
-        
+        console.log(`사이드 패턴에 카드 추가: ${dragCard}`);
+        const suit = dragCard[0];
+        const cardNumber = dragCard.slice(1);
+        movableAnswerDeck(suit, cardNumber);
     } else return;
 }
 
-function movableAnswerDeck(){
-
+function movableAnswerDeck(suit, cardNumber){
+    const pattern = ['heart', 'diamond', 'clover', 'spade'];
+    if(suit.toLowerCase() === 'h'){
+        suit = 'heart';
+    }
+    if(suit.toLowerCase() === 'd'){
+        suit = 'diamond';
+    }
+    if(suit.toLowerCase() === 'c'){
+        suit = 'clover';
+    }
+    if(suit.toLowerCase() === 'spade'){
+        suit = 'spade';
+    }
+    const sideCardElement = document.querySelector(`.${suit.toLowerCase()}-card img`);
+    console.log(sideCardElement)
+    console.log(suit)
+    const imagePath = imgFind(`${suit}${cardNumber}`);
+    if (sideCardElement) {
+        sideCardElement.setAttribute('src', imagePath);
+        console.log(`사이드 패턴 이미지 업데이트: ${imagePath}`);
+    } else {
+        console.log(`사이드 패턴 이미지 업데이트 실패: 해당 엘리먼트를 찾을 수 없음`);
+    }
 }
-
-// function createForwardCardElement(cardNumber, droppedArea, movedCard) {
-//     const newElement = document.createElement('div');
-//     newElement.classList.add(`forward-card-${cardNumber}`, `area${droppedArea.slice(4)}`);
-//     newElement.innerHTML = `<img src="${imgFind(movedCard)}">`;
-//     return newElement;
-// }
-
-// function updateForwardCard(droppedArea, movedCard, droppedImage, index) {
-//     const parentClassName = Array.from(droppedImage.parentElement.classList)[0];
-
-//     if (!parentClassName || !parentClassName.startsWith('forward-card-')) {
-//         return; // 아무 작업도 수행하지 않음
-//     }
-
-//     const dragStartCardNumber = parseInt(parentClassName.match(/forward-card-(\d+)/)?.[1]);
-
-//     if (dragStartCardNumber === undefined) {
-//         return; // 아무 작업도 수행하지 않음
-//     }
-
-//     const cardsInDroppedArea = area[droppedArea];
-//     const isLastCard = index === cardsInDroppedArea.length - 1;
-
-//     if (!isLastCard) {
-//         const newNumber = dragStartCardNumber + 1;
-//         const newElement = createForwardCardElement(newNumber, droppedArea, movedCard);
-
-//         // 새로운 엘리먼트를 현재 드롭한 위치 뒤에 추가
-//         const droppedElement = document.querySelector(`.forward-card-${dragStartCardNumber}.area${droppedArea.slice(4)}`);
-//         if (droppedElement) {
-//             droppedElement.parentElement.insertBefore(newElement, droppedElement.nextSibling);
-//         }
-//     }
-// }
-
-// function removeLastAreaElement(areaName) {
-//     const areaElement = document.querySelector(`.${areaName}:last-child`);
-//     areaElement.remove();
-// } // 항상 마지막 요소만 지우게 되는 문제가 있는데 이걸 어떻게 고쳐야할지 아이디어가 안 떠오름
-// // 에리어를 새로 랜더하는게 더 안전하다
-// // 객체가 새로 업데이트 되었으니까 이거 기준으로 랜더를 새로하기
-
-
-// function updateBackwardCard(areaName) {
-//     const areaElement = document.querySelector(`.${areaName}:last-child`);
-//     const backwardCardImage = areaElement.querySelector('img');
-//     backwardCardImage.src = imgFind(area[areaName][area[areaName].length - 1]);
-
-//     const classList = areaElement.classList;
-//     const lastClass = classList[classList.length - 1];
-//     const backwardCardNumber = lastClass.match(/\d+/)[0];
-//     areaElement.classList.replace(`backward-card-${backwardCardNumber}`, `forward-card-${backwardCardNumber}`);
-// }
-// 엘리먼트의 클래스가 안 고쳐짐
 
 function drop(e) {
     e.preventDefault();
@@ -238,9 +207,6 @@ function drop(e) {
     if (areaName.startsWith('area') && checkCard(area[areaName][index], endCard)) {
         const movedCard = area[areaName].pop();
         area[droppedArea].push(movedCard);
-        // updateForwardCard(droppedArea, movedCard, droppedImage);
-        // updateBackwardCard(areaName);
-
     } else {
         movableLeftDeck(droppedArea, endCard);
     }
@@ -382,6 +348,30 @@ function createLeftDeckArea() {
     $leftDeckArea.appendChild($sideBackCard);
 }
 
+function createRightDeckArea(){
+    const $heart = document.querySelector('.heart-card');
+    const $diamond = document.querySelector('.diamond-card');
+    const $clover = document.querySelector('.clover-card');
+    const $spade = document.querySelector('.spade-card');
+
+    $heart.addEventListener('dragstart', dragStart);
+    $heart.addEventListener('dragover', dragOver);
+    $heart.addEventListener('drop', drop);
+
+    $diamond.addEventListener('dragstart', dragStart);
+    $diamond.addEventListener('dragover', dragOver);
+    $diamond.addEventListener('drop', drop);
+
+    $clover.addEventListener('dragstart', dragStart);
+    $clover.addEventListener('dragover', dragOver);
+    $clover.addEventListener('drop', drop);
+
+    $spade.addEventListener('dragstart', dragStart);
+    $spade.addEventListener('dragover', dragOver);
+    $spade.addEventListener('drop', drop);
+
+}
+
 function createBoardArea() {
     for (let i = 0; i < 7; i++) {
         const cardArea = document.querySelector(`.card-area_${i}`);
@@ -399,13 +389,8 @@ function createBoardArea() {
                 cardElement.addEventListener('dragstart', dragStart);
             }
             else{
-                if (cards[j].startsWith('forward-card')) {
-                    imgPath = imgFind(cards[j]);
-                    className = `forward-card-${j} area${i}`;
-                } else {
-                    imgPath = 'img/backward_orange.svg';
-                    className = `backward-card-${j} area${i}`;
-                }
+                imgPath = 'img/backward_orange.svg';
+                className = `backward-card-${j} area${i}`;
             }
             cardElement.innerHTML = `<img src="${imgPath}">`;
             cardElement.className = className;
@@ -414,25 +399,62 @@ function createBoardArea() {
             cardElement.addEventListener('drop', drop);
 
             cardArea.appendChild(cardElement);            
-            // if(cardElement.children.startsWith('forward')){
-            //     console.log('작동한다')
-            // }
+        }
+    }
+} // 게임판 만드는 함수
+
+function updateBoard() {
+    for (let i = 0; i < 7; i++) {
+        const cardArea = document.querySelector(`.card-area_${i}`);
+        if (!cardArea) continue;
+
+        const cards = area['area' + i];
+
+        if (cards !== area['area' + i]) {
+            for (let j = 0; j < cards.length; j++) {
+                const cardElement = document.createElement('div');
+                let imgPath, className;
+
+                if (cards[j].startsWith('forward-card')) {
+                    imgPath = imgFind(cards[j]);
+                    className = `forward-card-${j} area${i}`;
+                    cardElement.addEventListener('dragstart', dragStart);
+                } else {
+                    imgPath = 'img/backward_orange.svg';
+                    className = `backward-card-${j} area${i}`;
+                }
+
+                cardElement.innerHTML = `<img src="${imgPath}">`;
+                cardElement.className = className;
+
+                cardElement.addEventListener('dragover', dragOver);
+                cardElement.addEventListener('drop', drop);
+
+                cardArea.appendChild(cardElement);
+            }
         }
     }
 }
 
- // 게임판 만드는 함수
+
+
 
 function render() {
+    updateBoard();
     createLeftDeckArea();
-    createBoardArea();
+    createRightDeckArea();
 }
 
-shareRandomDeck();
 render();
+shareRandomDeck();
+createBoardArea();
 
 // 에리어를 새로 랜더하는게 더 안전하다
 // 객체가 새로 업데이트 되었으니까 이거 기준으로 랜더를 새로하기
 // 새로 랜더하는 함수 만들기... 카드 옮길 때마다 랜더해야함
 // 크리에이트보드에리어를 계속 호출?? 업데이트할 때마다 랜더해야함
 // 크리에이트보드에리어 고치기 기존에 있던 forward-card-숫자는 유지해야함
+
+// 스코어 올리는거랑 오른쪽에 옮기는거 해오기
+// 크리에이트 보드랑 인덱스가 같은지 비교하고 아니면 포워드 카드 추가하는 식으로
+// 랜더를 새로 만들기
