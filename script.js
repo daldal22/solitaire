@@ -154,24 +154,43 @@ function dragOver(e) {
 
 console.log('test1 :',area)
 
-function movableLeftDeck(droppedArea, endCard) { // 이름 바꾸기
-    const leftDeckArea = document.querySelector('.left-card-area');
-    const card = leftDeckArea.querySelector(`.side-forward-card-1 img`);
-    const cardImgSrc = card.getAttribute('src');
-    const dragCard = cardImgSrc.split('.')[0].slice(4);
-    if (checkCard(dragCard, endCard)) {
-        const movedCard = dragCard;
+function movableLeftDeck(droppedArea, endCard) {
+    // const leftDeckArea = document.querySelector('.left-card-area');
+    // const sideForwardCard = leftDeckArea.querySelector('.side-forward-card-3 img');
+    const lastCard = openLeftDeck[openLeftDeck.length - 1];
+    console.log('openLeftDeck',openLeftDeck)
+    if (checkCard(lastCard, endCard)) {
+        const movedCard = lastCard;
         area[droppedArea].push(movedCard);
-        card.remove();
-    } else if(isSideValid(dragCard)){
-        const suit = dragCard[0];
-        const cardNumber = dragCard.slice(1);
+        openLeftDeck.pop();
+        updateSideForwardCard();
+        updateBoard();
+    } else if (isSideValid(lastCard)) {
+        const suit = lastCard[0];
+        const cardNumber = lastCard.slice(1);
         movableAnswerDeck(suit, cardNumber);
-        openLeftDeck = openLeftDeck.filter(card => card !== dragCard);
-        card.remove();
-        console.log('레프트덱',openLeftDeck);
-    } else return;
+        openLeftDeck.pop();
+        updateSideForwardCard();
+
+        console.log('레프트덱', openLeftDeck);
+    } else {
+        return;
+    }
 }
+
+function updateSideForwardCard() {
+    const sideForwardCard3 = document.querySelector('.side-forward-card-3 img');
+    const sideForwardCard2 = document.querySelector('.side-forward-card-2 img');
+    const sideForwardCard1 = document.querySelector('.side-forward-card-1 img');
+    const sideCard3 = openLeftDeck[openLeftDeck.length - 1];
+    const sideCard2 = openLeftDeck[openLeftDeck.length - 2];
+    const sideCard1 = openLeftDeck[openLeftDeck.length - 3];
+    sideForwardCard3.src = `img/${sideCard3}.svg`;
+    sideForwardCard2.src = `img/${sideCard2}.svg`;
+    sideForwardCard1.src = `img/${sideCard1}.svg`;
+
+}
+
 
 function movableAnswerDeck(suit, cardNumber){
     const pattern = ['heart', 'diamond', 'clover', 'spade'];
@@ -215,7 +234,8 @@ function drop(e) {
     const droppedArea = Array.from(droppedImage.parentElement.classList)[1];
     
     const dragStartCard = e.dataTransfer.getData('text/plain');
-    
+    console.log('확인',droppedArea)
+    // console.log('작동함:',movableLeftDeck(droppedArea, endCard))
     if (areaName.startsWith('area') && checkCard(area[areaName][index], endCard)) {
         const movedCard = area[areaName].pop();
         area[droppedArea].push(movedCard);
@@ -226,32 +246,11 @@ function drop(e) {
         movableAnswerDeck(suit, cardNumber);
         console.log(sidePattern)
     } else {
+        console.log('작동함:',movableLeftDeck(droppedArea, endCard))
         movableLeftDeck(droppedArea, endCard);
-        console.log(sidePattern)
     }
-
-    // area = updateAreaLogic(droppedArea);
-    // updateBoard(area);
-
     render();
 }
-
-// function updateAreaLogic(droppedArea) {
-//     const updatedArea = { ...area };
-
-//     for (let i = 0; i < 7; i++) {
-//         if (droppedArea === 'area' + i) {
-//             const lastCard = updatedArea[droppedArea].pop();
-//             updatedArea[droppedArea].push(lastCard);
-//             updatedArea['openIndex' + i] = updatedArea[droppedArea].length - 1;
-//         }
-//     }
-
-//     return updatedArea;
-// }
-
-
-
 
 function shuffleAllDeck() {
     for (let i = 0; i < deck.length; i++) {
@@ -329,7 +328,6 @@ function drawThreeCards() {
             $leftDeckArea.appendChild($forwardCard);
         }
     }
-    console.log(openLeftDeck)
 } // 카드 뽑기
 
 
@@ -419,27 +417,28 @@ function createBoardArea() {
 
         const cards = area['area' + i];
         cardArea.innerHTML = '';
-        const openIndex = area['openIndex' + i]
+        const openIndex = area['openIndex' + i];
 
         for (let j = 0; j < cards.length; j++) {
             const cardElement = document.createElement('div');
-            let imgPath,className
-            if(j < openIndex){
+            let imgPath, className;
+
+            if (j < openIndex) {
                 imgPath = 'img/backward_orange.svg';
                 className = `backward-card-${j} area${i}`;
-            }
-            else{
+            } else {
                 imgPath = imgFind(cards[j]);
                 className = `forward-card-${j} area${i}`;
                 cardElement.addEventListener('dragstart', dragStart);
             }
+
             cardElement.innerHTML = `<img src="${imgPath}">`;
             cardElement.className = className;
 
             cardElement.addEventListener('dragover', dragOver);
             cardElement.addEventListener('drop', drop);
 
-            cardArea.appendChild(cardElement);            
+            cardArea.appendChild(cardElement);
         }
     }
 } // 게임판 만드는 함수
@@ -483,12 +482,6 @@ function updateBoard() {
         }
     }
 }
-
-// 리렌더 함수 만들기
-
-
-
-
 
 function render() {
     updateBoard();
