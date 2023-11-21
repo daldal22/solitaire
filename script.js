@@ -49,7 +49,7 @@ btnPause.addEventListener('click', () => {
 window.addEventListener('load', startClock);
 
 // 게임판
-const area = {
+let area = {
     area0: ['SA'],
     openIndex0: 0,
     area1: ['D2', 'H2'],
@@ -159,21 +159,22 @@ function movableLeftDeck(droppedArea, endCard) { // 이름 바꾸기
     const card = leftDeckArea.querySelector(`.side-forward-card-1 img`);
     const cardImgSrc = card.getAttribute('src');
     const dragCard = cardImgSrc.split('.')[0].slice(4);
-    console.log(dragCard)
     if (checkCard(dragCard, endCard)) {
         const movedCard = dragCard;
         area[droppedArea].push(movedCard);
+        card.remove();
     } else if(isSideValid(dragCard)){
-        console.log(`사이드 패턴에 카드 추가: ${dragCard}`);
         const suit = dragCard[0];
         const cardNumber = dragCard.slice(1);
         movableAnswerDeck(suit, cardNumber);
+        openLeftDeck = openLeftDeck.filter(card => card !== dragCard);
+        card.remove();
+        console.log('레프트덱',openLeftDeck);
     } else return;
 }
 
 function movableAnswerDeck(suit, cardNumber){
     const pattern = ['heart', 'diamond', 'clover', 'spade'];
-    console.log(suit)
     switch (suit.toLowerCase()) {
         case 'h':
             suit = 'heart';
@@ -198,9 +199,7 @@ function movableAnswerDeck(suit, cardNumber){
     const imagePath = imgFind(`${suit.toUpperCase()[0]}${cardNumber}`);
     if (sideCardElement) {
         sideCardElement.setAttribute('src', imagePath);
-        console.log(`사이드 패턴 이미지 업데이트: ${imagePath}`);
-    } else {
-        console.log(`사이드 패턴 이미지 업데이트 실패: 해당 엘리먼트를 찾을 수 없음`);
+        sidePattern[suit.toUpperCase()[0]] = `${suit.toUpperCase()[0]}${cardNumber}`;
     }
 }
 
@@ -216,21 +215,42 @@ function drop(e) {
     const droppedArea = Array.from(droppedImage.parentElement.classList)[1];
     
     const dragStartCard = e.dataTransfer.getData('text/plain');
-
-    console.log(dragStartCard);
     
     if (areaName.startsWith('area') && checkCard(area[areaName][index], endCard)) {
         const movedCard = area[areaName].pop();
         area[droppedArea].push(movedCard);
-    } else if (isSideValid(dragStartCard)) {
+    } else if (areaName.startsWith('area') && isSideValid(dragStartCard)) {
+        area[areaName].pop();
         const suit = dragStartCard[0];
         const cardNumber = dragStartCard.slice(1);
         movableAnswerDeck(suit, cardNumber);
+        console.log(sidePattern)
     } else {
         movableLeftDeck(droppedArea, endCard);
+        console.log(sidePattern)
     }
+
+    // area = updateAreaLogic(droppedArea);
+    // updateBoard(area);
+
     render();
 }
+
+// function updateAreaLogic(droppedArea) {
+//     const updatedArea = { ...area };
+
+//     for (let i = 0; i < 7; i++) {
+//         if (droppedArea === 'area' + i) {
+//             const lastCard = updatedArea[droppedArea].pop();
+//             updatedArea[droppedArea].push(lastCard);
+//             updatedArea['openIndex' + i] = updatedArea[droppedArea].length - 1;
+//         }
+//     }
+
+//     return updatedArea;
+// }
+
+
 
 
 function shuffleAllDeck() {
@@ -246,7 +266,7 @@ function shareRandomDeck() {
     let startIdx = 0;
 
     for (let i = 0; i < 7; i++) {
-        const endIdx = startIdx + (i + 1);
+        const endIdx = startIdx + i + 1;
         area[`area${i}`] = deck.slice(startIdx, endIdx);
         startIdx = endIdx;
     }
@@ -309,6 +329,7 @@ function drawThreeCards() {
             $leftDeckArea.appendChild($forwardCard);
         }
     }
+    console.log(openLeftDeck)
 } // 카드 뽑기
 
 
@@ -398,18 +419,19 @@ function createBoardArea() {
 
         const cards = area['area' + i];
         cardArea.innerHTML = '';
+        const openIndex = area['openIndex' + i]
 
         for (let j = 0; j < cards.length; j++) {
             const cardElement = document.createElement('div');
             let imgPath,className
-            if(j === cards.length - 1){
+            if(j < openIndex){
+                imgPath = 'img/backward_orange.svg';
+                className = `backward-card-${j} area${i}`;
+            }
+            else{
                 imgPath = imgFind(cards[j]);
                 className = `forward-card-${j} area${i}`;
                 cardElement.addEventListener('dragstart', dragStart);
-            }
-            else{
-                imgPath = 'img/backward_orange.svg';
-                className = `backward-card-${j} area${i}`;
             }
             cardElement.innerHTML = `<img src="${imgPath}">`;
             cardElement.className = className;
@@ -428,32 +450,42 @@ function updateBoard() {
         if (!cardArea) continue;
 
         const cards = area['area' + i];
+        const openIndex = area['openIndex' + i];
 
-        if (cards !== area['area' + i]) {
-            for (let j = 0; j < cards.length; j++) {
-                const cardElement = document.createElement('div');
-                let imgPath, className;
+        cardArea.innerHTML = '';
 
-                if (cards[j].startsWith('forward-card')) {
-                    imgPath = imgFind(cards[j]);
-                    className = `forward-card-${j} area${i}`;
-                    cardElement.addEventListener('dragstart', dragStart);
-                } else {
-                    imgPath = 'img/backward_orange.svg';
-                    className = `backward-card-${j} area${i}`;
-                }
+        for (let j = 0; j < cards.length; j++) {
+            const cardElement = document.createElement('div');
+            let imgPath, className;
 
-                cardElement.innerHTML = `<img src="${imgPath}">`;
-                cardElement.className = className;
-
-                cardElement.addEventListener('dragover', dragOver);
-                cardElement.addEventListener('drop', drop);
-
-                cardArea.appendChild(cardElement);
+            if (j < openIndex) {
+                imgPath = 'img/backward_orange.svg';
+                className = `backward-card-${j} area${i}`;
+            } else {
+                imgPath = imgFind(cards[j]);
+                className = `forward-card-${j} area${i}`;
+                cardElement.addEventListener('dragstart', dragStart);
             }
+
+            if (j === cards.length - 1 && !cards.includes(`forward-card-${j}`)) {
+                imgPath = imgFind(cards[j]);
+                className = `forward-card-${j} area${i}`;
+                cardElement.addEventListener('dragstart', dragStart);
+            }
+
+            cardElement.innerHTML = `<img src="${imgPath}">`;
+            cardElement.className = className;
+
+            cardElement.addEventListener('dragover', dragOver);
+            cardElement.addEventListener('drop', drop);
+
+            cardArea.appendChild(cardElement);
         }
     }
 }
+
+// 리렌더 함수 만들기
+
 
 
 
@@ -477,3 +509,4 @@ createBoardArea();
 // 스코어 올리는거랑 오른쪽에 옮기는거 해오기
 // 크리에이트 보드랑 인덱스가 같은지 비교하고 아니면 포워드 카드 추가하는 식으로
 // 랜더를 새로 만들기
+// 왼쪽 오픈레프트덱 엘리먼트를 아예 리렌더 하는 방식으로 만들기(클래스 유동적으로 바뀌어야함 이미지 드롭될때마다 바뀜)
