@@ -234,7 +234,6 @@ function drop(e) {
     const droppedArea = Array.from(droppedImage.parentElement.classList)[1];
     
     const dragStartCard = e.dataTransfer.getData('text/plain');
-    console.log('확인',droppedArea)
     // console.log('작동함:',movableLeftDeck(droppedArea, endCard))
     if (areaName.startsWith('area') && checkCard(area[areaName][index], endCard)) {
         const movedCard = area[areaName].pop();
