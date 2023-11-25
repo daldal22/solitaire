@@ -1,3 +1,5 @@
+// 타이머
+
 let timerId;
 let isRunning = false;
 let elapsedTime = 0;
@@ -47,6 +49,10 @@ btnPause.addEventListener('click', () => {
 });
 
 window.addEventListener('load', startClock);
+
+// 점수판
+
+
 
 // 게임판
 let area = {
@@ -188,6 +194,10 @@ function updateSideForwardCard() {
     sideForwardCard3.src = `img/${sideCard3}.svg`;
     sideForwardCard2.src = `img/${sideCard2}.svg`;
     sideForwardCard1.src = `img/${sideCard1}.svg`;
+    
+    if (sideCard1 === undefined) {
+        sideForwardCard1.remove();
+    }
 
 }
 
@@ -234,10 +244,11 @@ function drop(e) {
     const droppedArea = Array.from(droppedImage.parentElement.classList)[1];
     
     const dragStartCard = e.dataTransfer.getData('text/plain');
-    // console.log('작동함:',movableLeftDeck(droppedArea, endCard))
     if (areaName.startsWith('area') && checkCard(area[areaName][index], endCard)) {
-        const movedCard = area[areaName].pop();
-        area[droppedArea].push(movedCard);
+        const movedCards = getSubForwardCard(areaName, index);
+        movedCards.forEach((card) => {
+            area[droppedArea].push(card);
+        });
     } else if (areaName.startsWith('area') && isSideValid(dragStartCard)) {
         area[areaName].pop();
         const suit = dragStartCard[0];
@@ -248,7 +259,14 @@ function drop(e) {
         console.log('작동함:',movableLeftDeck(droppedArea, endCard))
         movableLeftDeck(droppedArea, endCard);
     }
+    
     render();
+}
+
+function getSubForwardCard(areaName, index) {
+    const movedCards = area[areaName].slice(index);
+    area[areaName] = area[areaName].slice(0, index); // 원래의 area 배열 업데이트
+    return movedCards;
 }
 
 function shuffleAllDeck() {
@@ -502,3 +520,10 @@ createBoardArea();
 // 크리에이트 보드랑 인덱스가 같은지 비교하고 아니면 포워드 카드 추가하는 식으로
 // 랜더를 새로 만들기
 // 왼쪽 오픈레프트덱 엘리먼트를 아예 리렌더 하는 방식으로 만들기(클래스 유동적으로 바뀌어야함 이미지 드롭될때마다 바뀜)
+
+// 사이드 영역에 A만 옮겨지는거 옮기기 2는 안 옮겨짐
+// 왼쪽 영역에 3개만 오픈 되었을 때, 카드 옮기면 카드가 2장 밖에 없으니까 오류 뜸
+// 게임보드 css 고치기 카드 간격
+
+// 되돌리기 카드 리디자인해서(코딩에 올라온 이미지와 색 같게) 보내드리기
+// 알고리즘 풀기
