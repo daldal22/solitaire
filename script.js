@@ -107,13 +107,10 @@ function checkCard(card1, card2){
     const card1Num = cardNum.indexOf(card1.slice(1))
     const card2Num = cardNum.indexOf(card2.slice(1))
     if (card2Num - card1Num !== 1) {
-        // console.log('Number check failed:', card1, card2);
         return false;
     }
     return true;
 } // 카드가 해당 위치에 있어도 되는지 확인하는 함수
-
-// console.log(checkCard('SA', 'D2'))
 
 function parseColor(card) {
     if (typeof card !== 'string') return;
@@ -132,7 +129,7 @@ function isSideValid(card) {
     }
 
     const topCardNum = cardNum.indexOf(topCard);
-    const currentCardNum = cardNum.indexOf(card);
+    const currentCardNum = cardNum.indexOf(card.slice(1));
 
     return topCardNum + 1 === currentCardNum;
 } // 오른쪽으로 옮겨도 유효한지 판단하는 함수
