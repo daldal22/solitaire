@@ -56,19 +56,19 @@ window.addEventListener('load', startClock);
 
 // 게임판
 let area = {
-    area0: ['SA'],
+    area0: ['H5'],
     openIndex0: 0,
-    area1: ['D2', 'S2'],
+    area1: [],
     openIndex1: 1,
-    area2: ['C3', 'D3', 'S3'],
+    area2: [],
     openIndex2: 2,
-    area3: ['S4', 'H4', 'D4', 'C4'],
+    area3: [],
     openIndex3: 3,
-    area4: ['H5', 'D5', 'C5', 'S5', 'S6'],
+    area4: [],
     openIndex4: 4,
-    area5: ['C6', 'D6', 'H6', 'S7', 'S8', 'SJ'],
+    area5: [],
     openIndex5: 5,
-    area6: ['S10', 'H10', 'D10', 'CJ','S9' , 'SK', 'HK'],
+    area6: [],
     openIndex6: 6
 };
 
@@ -82,10 +82,7 @@ let deck = [
 
 // 왼쪽 사이드 덱
 let leftDeck = [
-    'H2', 'DJ', 'SQ',
-    'DA', 'D7', 'D8', 'D9', 'DK',
-    'HA', 'H3', 'H5', 'H7', 'H8', 'H9', 'HJ', 'HQ',
-    'CA', 'C2', 'C7', 'C8', 'C9', 'C10', 'CQ', 'CK'
+    'S2','D3','C4','HA'
 ];
 
 let openLeftDeck = [];
@@ -343,7 +340,7 @@ function drawThreeCards() {
 
             const existingElement = $leftDeckArea.querySelector(`.side-forward-card-${i + 1}`);
             if (existingElement) {
-                existingElement.remove();
+                continue;
             }
 
             const $forwardCard = document.createElement('div');
@@ -380,7 +377,7 @@ function createLeftDeckArea() {
     $sideBackImg.src = imgFind('backward_orange');
     
     $sideBackCard.addEventListener('click', () => {
-            if (leftDeck.length > 2) {
+            if (leftDeck.length > 0) {
                 drawThreeCards();
             } else if(leftDeck.length === 0) {
                 $sideBackCard.style.visibility = 'hidden';
@@ -541,7 +538,7 @@ function render() {
 }
 
 render();
-shareRandomDeck();
+// shareRandomDeck();
 createBoardArea();
 
 // 에리어를 새로 랜더하는게 더 안전하다
