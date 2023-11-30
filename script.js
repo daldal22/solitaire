@@ -58,7 +58,7 @@ window.addEventListener('load', startClock);
 let area = {
     area0: ['SA'],
     openIndex0: 0,
-    area1: ['D2', 'H2'],
+    area1: ['D2', 'S2'],
     openIndex1: 1,
     area2: ['C3', 'D3', 'S3'],
     openIndex2: 2,
@@ -66,9 +66,9 @@ let area = {
     openIndex3: 3,
     area4: ['H5', 'D5', 'C5', 'S5', 'S6'],
     openIndex4: 4,
-    area5: ['C6', 'D6', 'H6', 'S7', 'S8', 'S9'],
+    area5: ['C6', 'D6', 'H6', 'S7', 'S8', 'SJ'],
     openIndex5: 5,
-    area6: ['S10', 'H10', 'D10', 'CJ', 'DJ', 'SK', 'HK'],
+    area6: ['S10', 'H10', 'D10', 'CJ','S9' , 'SK', 'HK'],
     openIndex6: 6
 };
 
@@ -82,7 +82,7 @@ let deck = [
 
 // 왼쪽 사이드 덱
 let leftDeck = [
-    'S2', 'SJ', 'SQ',
+    'H2', 'DJ', 'SQ',
     'DA', 'D7', 'D8', 'D9', 'DK',
     'HA', 'H3', 'H5', 'H7', 'H8', 'H9', 'HJ', 'HQ',
     'CA', 'C2', 'C7', 'C8', 'C9', 'C10', 'CQ', 'CK'
@@ -145,7 +145,7 @@ function dragStart(e) {
     const card = e.target;
     let cardImgSrc = card.getAttribute('src');
     const dragStartCard = cardImgSrc.split('.')[0].slice(4);
-    e.dataTransfer.setData('text/plain', dragStartCard);
+    e.dataTransfer.setData('dragStart', dragStartCard);
     e.dataTransfer.setData('index', index);
     e.dataTransfer.setData('area', area);
 }
@@ -160,6 +160,7 @@ console.log('test1 :',area)
 function movableLeftDeck(droppedArea, endCard) {
     // const leftDeckArea = document.querySelector('.left-card-area');
     // const sideForwardCard = leftDeckArea.querySelector('.side-forward-card-3 img');
+    // 밑으로 카드 내려오는 것들 고치기 그냥 그 자리에..
     const lastCard = openLeftDeck[openLeftDeck.length - 1];
     console.log('openLeftDeck',openLeftDeck)
     if (checkCard(lastCard, endCard)) {
@@ -192,10 +193,18 @@ function updateSideForwardCard() {
     sideForwardCard2.src = `img/${sideCard2}.svg`;
     sideForwardCard1.src = `img/${sideCard1}.svg`;
     
-    if (sideCard1 === undefined) {
-        sideForwardCard1.remove();
-    }
+    // if (sideCard1 === undefined) {
+    //     sideForwardCard1.remove();
+    // }
+    // if (sideCard2 === undefined) {
+    //     sideForwardCard2.remove();
+    // }
+    // if (sideCard3 === undefined) {
+    //     sideForwardCard3.remove();
+    // }
 
+    // 전체 초기화(이너html'') 한다음에 마지막 카드 최대 3장을 리렌더 하기
+    // 리무브 쓰면 안됨
 }
 
 
@@ -239,8 +248,13 @@ function drop(e) {
     const cardImgSrc = droppedImage.getAttribute('src');
     const endCard = cardImgSrc.split('.')[0].slice(4);
     const droppedArea = Array.from(droppedImage.parentElement.classList)[1];
+    console.log(area[droppedArea])
     
-    const dragStartCard = e.dataTransfer.getData('text/plain');
+    const dragStartCard = e.dataTransfer.getData('dragStart');
+
+    if (areaName.startsWith('area') && !areaName.includes('forward-card') && dragStartCard[1] === 'K') {
+        area[droppedArea].push(areaName);
+    }
     if (areaName.startsWith('area') && checkCard(area[areaName][index], endCard)) {
         const movedCards = getSubForwardCard(areaName, index);
         movedCards.forEach((card) => {
@@ -253,10 +267,8 @@ function drop(e) {
         movableAnswerDeck(suit, cardNumber);
         console.log(sidePattern)
     } else {
-        console.log('작동함:',movableLeftDeck(droppedArea, endCard))
         movableLeftDeck(droppedArea, endCard);
     }
-    
     render();
 }
 
@@ -433,6 +445,8 @@ function createBoardArea() {
         cardArea.innerHTML = '';
         const openIndex = area['openIndex' + i];
 
+        cardArea.innerHTML = '';
+
         for (let j = 0; j < cards.length; j++) {
             const cardElement = document.createElement('div');
             let imgPath, className;
@@ -467,14 +481,37 @@ function updateBoard() {
 
         cardArea.innerHTML = '';
 
+
+        cardArea.addEventListener('dragover', dragOver);
+        cardArea.addEventListener('drop', drop);
+
         for (let j = 0; j < cards.length; j++) {
             const cardElement = document.createElement('div');
             let imgPath, className;
 
-            if (j < openIndex) {
+            if (openIndex >= cards.length) {
+                const isForwardCard = cards[j].includes("forward-card"); // 이거 자체가 말도 안 된다
+                if (isForwardCard) {
+                    imgPath = imgFind(cards[j]);
+                    className = `forward-card-${j} area${i}`;
+                    cardElement.addEventListener('dragstart', dragStart);
+                } else {
+                    imgPath = 'img/backward_orange.svg';
+                    className = `backward-card-${j} area${i}`;
+                }
+
+                if (j === cards.length - 1 && cards[j][1] === 'K') {
+                    imgPath = imgFind(cards[j]);
+                    className = `forward-card-${j} area${i}`;
+                    cardArea.addEventListener('dragstart', dragStart);
+                }
+                
+            }
+            else if (j < openIndex) {
                 imgPath = 'img/backward_orange.svg';
                 className = `backward-card-${j} area${i}`;
-            } else {
+            }
+            else {
                 imgPath = imgFind(cards[j]);
                 className = `forward-card-${j} area${i}`;
                 cardElement.addEventListener('dragstart', dragStart);
@@ -518,9 +555,10 @@ createBoardArea();
 // 랜더를 새로 만들기
 // 왼쪽 오픈레프트덱 엘리먼트를 아예 리렌더 하는 방식으로 만들기(클래스 유동적으로 바뀌어야함 이미지 드롭될때마다 바뀜)
 
-// 사이드 영역에 A만 옮겨지는거 옮기기 2는 안 옮겨짐
-// 왼쪽 영역에 3개만 오픈 되었을 때, 카드 옮기면 카드가 2장 밖에 없으니까 오류 뜸
-// 게임보드 css 고치기 카드 간격
 
-// 되돌리기 카드 리디자인해서(코딩에 올라온 이미지와 색 같게) 보내드리기
-// 알고리즘 풀기
+
+// 카드엘리먼트 말고 에리어에 드롭해도 되게 만들기 그래야지 빈 에리어에 카드 넣을 수 있음
+// >> 드롭 함수도 고쳤고 업데이트 보드도 고쳤는데 안 돌아감
+// 오픈인덱스 문제 해결하기
+
+// 이미지를 히든으로 하나 깔아두기 백워드-0 위치에 / 이미지 걸어서 할거니까 에리어에 이벤트 거는거 필요 없음
